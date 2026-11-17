@@ -1,0 +1,15 @@
+.venv/
+__pycache__/
+*.pyc
+.env
+data/*
+!data/manual/
+data/manual/*
+!data/manual/README.md
+*.joblib
+.pytest_cache/
+.ruff_cache/
+function_app/.python_packages/
+function_app/pipeline/
+function_app/model/
+local.settings.json
