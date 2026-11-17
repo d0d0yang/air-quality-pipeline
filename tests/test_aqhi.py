@@ -33,6 +33,12 @@ def test_rounding_floor_and_ten_plus():
     assert aqhi.label(10.6) == "10+"
 
 
+def test_missing_values_have_no_category():
+    assert aqhi.rounded(None) is None
+    assert aqhi.category(math.nan) is None
+    assert aqhi.colour(math.nan) is None
+
+
 def test_categories_match_eccc():
     assert [aqhi.category(v) for v in (1, 3, 4, 6, 7, 10, 11)] == [
         "low", "low", "moderate", "moderate", "high", "high", "very high"]

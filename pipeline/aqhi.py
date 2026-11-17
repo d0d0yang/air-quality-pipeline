@@ -46,7 +46,7 @@ def aqhi(no2_ppb, o3_ppb, pm25_ugm3):
 
 def rounded(value):
     """The published index: rounded to a whole number, at least 1, anything over 10 shown as 11 ("10+")."""
-    if value is None:
+    if _missing(value):
         return None
     return min(max(int(math.floor(value + 0.5)), 1), 11)
 

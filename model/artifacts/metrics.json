@@ -1,0 +1,577 @@
+{
+  "generated_utc": "2026-11-17T07:46:09Z",
+  "model_version": "20261117-ridge",
+  "chosen_model": "ridge",
+  "features": [
+    "pm25_24h_to6_mean",
+    "pm25_24h_to6_max",
+    "pm25_6h_to6_mean",
+    "o3_8h_to6_max",
+    "no2_24h_to6_mean",
+    "pm25_prev_day_mean",
+    "pm25_3day_trend",
+    "regional_pm25_24h_mean",
+    "fc_temp_mean",
+    "fc_temp_max",
+    "fc_wind_mean",
+    "fc_wind_sin",
+    "fc_wind_cos",
+    "fc_rh_mean",
+    "fc_precip_sum",
+    "fc_cloud_mean",
+    "dow_sin",
+    "dow_cos",
+    "month_sin",
+    "month_cos",
+    "lat",
+    "lon",
+    "elevation_m",
+    "urban"
+  ],
+  "data": {
+    "training_rows": 21154,
+    "holdout_rows": 6718,
+    "sites": 25,
+    "train_targets": [
+      "2022-11-17",
+      "2025-11-13"
+    ],
+    "holdout_targets": [
+      "2025-11-21",
+      "2026-11-16"
+    ],
+    "low_cost_rows": 16098
+  },
+  "selection": {
+    "ridge": {
+      "backtest_mae_mean": 3.3612941351378325,
+      "folds": [
+        {
+          "quarter": "2024-01-01",
+          "n": 1623,
+          "mae": 3.1336378888728587,
+          "rmse": 3.795918486662743,
+          "r2": -0.13081918651399826,
+          "skill_vs_persistence": 0.1607964161927995
+        },
+        {
+          "quarter": "2024-04-01",
+          "n": 1600,
+          "mae": 3.579217565082894,
+          "rmse": 4.1904215465719865,
+          "r2": -0.5409365136443431,
+          "skill_vs_persistence": -0.3433027429334241
+        },
+        {
+          "quarter": "2024-07-01",
+          "n": 1613,
+          "mae": 2.9118607061230093,
+          "rmse": 3.492837618178013,
+          "r2": 0.17361156609417217,
+          "skill_vs_persistence": 0.10528127428058665
+        },
+        {
+          "quarter": "2024-10-01",
+          "n": 1636,
+          "mae": 2.75633713510336,
+          "rmse": 3.3781480092643394,
+          "r2": 0.043388366910496745,
+          "skill_vs_persistence": 0.15878373418667568
+        },
+        {
+          "quarter": "2025-01-01",
+          "n": 1723,
+          "mae": 3.0228399347475654,
+          "rmse": 4.29638002068766,
+          "r2": 0.08381655652078901,
+          "skill_vs_persistence": 0.27030043880297383
+        },
+        {
+          "quarter": "2025-04-01",
+          "n": 1717,
+          "mae": 3.558145280578628,
+          "rmse": 6.419360087728469,
+          "r2": 0.35671006599934474,
+          "skill_vs_persistence": 0.1482460608712699
+        },
+        {
+          "quarter": "2025-07-01",
+          "n": 1713,
+          "mae": 5.456716449854978,
+          "rmse": 10.088946793177394,
+          "r2": 0.20380982915632384,
+          "skill_vs_persistence": 0.20318304819518673
+        },
+        {
+          "quarter": "2025-10-01",
+          "n": 793,
+          "mae": 2.471598120739364,
+          "rmse": 3.099377020937005,
+          "r2": -0.14524880957495734,
+          "skill_vs_persistence": -0.0234868458205304
+        }
+      ]
+    },
+    "random_forest": {
+      "backtest_mae_mean": 3.854894338339327,
+      "folds": [
+        {
+          "quarter": "2024-01-01",
+          "n": 1623,
+          "mae": 2.5787463802605477,
+          "rmse": 3.1539283826890743,
+          "r2": 0.21933794999116318,
+          "skill_vs_persistence": 0.3093990815821728
+        },
+        {
+          "quarter": "2024-04-01",
+          "n": 1600,
+          "mae": 8.110628520279587,
+          "rmse": 14.12976958438992,
+          "r2": -16.5202168636394,
+          "skill_vs_persistence": -2.0439696218783228
+        },
+        {
+          "quarter": "2024-07-01",
+          "n": 1613,
+          "mae": 3.8054699063478097,
+          "rmse": 6.1294937245364745,
+          "r2": -1.5449347279974899,
+          "skill_vs_persistence": -0.16929535063661572
+        },
+        {
+          "quarter": "2024-10-01",
+          "n": 1636,
+          "mae": 2.6290459143879295,
+          "rmse": 4.340517300908739,
+          "r2": -0.5792878482035384,
+          "skill_vs_persistence": 0.1976321914371849
+        },
+        {
+          "quarter": "2025-01-01",
+          "n": 1723,
+          "mae": 2.802251639266869,
+          "rmse": 3.9151643992211995,
+          "r2": 0.23918849994472346,
+          "skill_vs_persistence": 0.32354943176723616
+        },
+        {
+          "quarter": "2025-04-01",
+          "n": 1717,
+          "mae": 3.0217465913748547,
+          "rmse": 6.180929127429744,
+          "r2": 0.4036093747748687,
+          "skill_vs_persistence": 0.2766499512257703
+        },
+        {
+          "quarter": "2025-07-01",
+          "n": 1713,
+          "mae": 6.070803098143914,
+          "rmse": 10.939618464244184,
+          "r2": 0.06388436337569148,
+          "skill_vs_persistence": 0.11351105300719622
+        },
+        {
+          "quarter": "2025-10-01",
+          "n": 793,
+          "mae": 1.8204626566531033,
+          "rmse": 2.400375578347574,
+          "r2": 0.3130748290068488,
+          "skill_vs_persistence": 0.24614783982981148
+        }
+      ]
+    },
+    "hist_gradient_boosting": {
+      "backtest_mae_mean": 3.489771229616896,
+      "folds": [
+        {
+          "quarter": "2024-01-01",
+          "n": 1623,
+          "mae": 2.523610797491547,
+          "rmse": 3.0984736180286405,
+          "r2": 0.24654899199947478,
+          "skill_vs_persistence": 0.3241646608532629
+        },
+        {
+          "quarter": "2024-04-01",
+          "n": 1600,
+          "mae": 6.0025748394528184,
+          "rmse": 9.140716088841396,
+          "r2": -6.332123268513851,
+          "skill_vs_persistence": -1.2528038879674486
+        },
+        {
+          "quarter": "2024-07-01",
+          "n": 1613,
+          "mae": 4.2571987524436885,
+          "rmse": 6.448064523313869,
+          "r2": -1.8163471623634173,
+          "skill_vs_persistence": -0.3080967214232484
+        },
+        {
+          "quarter": "2024-10-01",
+          "n": 1636,
+          "mae": 2.285873575137223,
+          "rmse": 2.9898606428064154,
+          "r2": 0.2506577790214358,
+          "skill_vs_persistence": 0.30236616975877273
+        },
+        {
+          "quarter": "2025-01-01",
+          "n": 1723,
+          "mae": 2.6347361950531876,
+          "rmse": 3.7304469992644798,
+          "r2": 0.30928512202038216,
+          "skill_vs_persistence": 0.36398688422091885
+        },
+        {
+          "quarter": "2025-04-01",
+          "n": 1717,
+          "mae": 2.955716316025863,
+          "rmse": 5.969927994176573,
+          "r2": 0.443632867211739,
+          "skill_vs_persistence": 0.29245637358779153
+        },
+        {
+          "quarter": "2025-07-01",
+          "n": 1713,
+          "mae": 5.620628981742853,
+          "rmse": 10.48227350197829,
+          "r2": 0.14051931240086912,
+          "skill_vs_persistence": 0.17924772276243917
+        },
+        {
+          "quarter": "2025-10-01",
+          "n": 793,
+          "mae": 1.637830379587985,
+          "rmse": 2.235718263829319,
+          "r2": 0.4040838154293144,
+          "skill_vs_persistence": 0.3217757227084741
+        }
+      ]
+    }
+  },
+  "spatial": {
+    "folds": 5,
+    "n": 21154,
+    "mae": 3.406998489459332,
+    "rmse": 5.989746178043496,
+    "r2": 0.3059925315296279,
+    "skill_vs_persistence": 0.22178252083533112,
+    "per_site": [
+      {
+        "site_id": 1,
+        "name": "TORONTO EAST",
+        "lat": 43.74792,
+        "lon": -79.27406,
+        "n": 1081,
+        "mae": 3.2844119917919663,
+        "skill_vs_persistence": 0.25086522278619316
+      },
+      {
+        "site_id": 2,
+        "name": "TORONTO WEST - 125 RESOURCES. RD.",
+        "lat": 43.709444,
+        "lon": -79.5435,
+        "n": 1080,
+        "mae": 3.4468734865736157,
+        "skill_vs_persistence": 0.26789706383853773
+      },
+      {
+        "site_id": 3,
+        "name": "MISSISSAUGA - 3359 MISSISSAUGA RD.",
+        "lat": 43.54697,
+        "lon": -79.65869,
+        "n": 1082,
+        "mae": 3.2419284359064506,
+        "skill_vs_persistence": 0.17601949880639856
+      },
+      {
+        "site_id": 4,
+        "name": "ETOBICOKE SOUTH - 461 KIPLING AVENUE",
+        "lat": 43.610761,
+        "lon": -79.52194,
+        "n": 635,
+        "mae": 3.0837080283179343,
+        "skill_vs_persistence": 0.24658978052334868
+      },
+      {
+        "site_id": 5,
+        "name": "TORONTO - ROADSIDE - 401W",
+        "lat": 43.711106,
+        "lon": -79.543425,
+        "n": 739,
+        "mae": 3.302083921377325,
+        "skill_vs_persistence": 0.23099442560529027
+      },
+      {
+        "site_id": 6,
+        "name": "TORONTO NORTH - 4905 DUFFERIN ST.",
+        "lat": 43.78042,
+        "lon": -79.46752,
+        "n": 1078,
+        "mae": 3.4667742006060536,
+        "skill_vs_persistence": 0.22095400262421128
+      },
+      {
+        "site_id": 7,
+        "name": "TORONTO DOWNTOWN - 55 JOHN ST. AT WELLINGTON ST.",
+        "lat": 43.64543,
+        "lon": -79.38908,
+        "n": 1052,
+        "mae": 3.2892149278298204,
+        "skill_vs_persistence": 0.2600237279540215
+      },
+      {
+        "site_id": 8,
+        "name": "BRAMPTON - 109 MCLAUGHLIN RD. S.",
+        "lat": 43.669567,
+        "lon": -79.76567,
+        "n": 1080,
+        "mae": 3.330782025227197,
+        "skill_vs_persistence": 0.18836913285826207
+      },
+      {
+        "site_id": 9,
+        "name": "HAMILTON DOWNTOWN - ELGIN & KELLY",
+        "lat": 43.25778,
+        "lon": -79.86167,
+        "n": 773,
+        "mae": 3.6368695541506937,
+        "skill_vs_persistence": 0.2669255581609421
+      },
+      {
+        "site_id": 10,
+        "name": "HAMILTON WEST - MAIN ST. & HWY 403",
+        "lat": 43.25744,
+        "lon": -79.90775,
+        "n": 1082,
+        "mae": 3.4397889927126766,
+        "skill_vs_persistence": 0.24956388687458386
+      },
+      {
+        "site_id": 11,
+        "name": "HAMILTON MOUNTAIN - 250 FENNELL AVE W.",
+        "lat": 43.24132,
+        "lon": -79.88941,
+        "n": 1086,
+        "mae": 3.614593352596855,
+        "skill_vs_persistence": 0.2568550591939275
+      },
+      {
+        "site_id": 12,
+        "name": "ST. CATHARINES - ARGYLE CRES.",
+        "lat": 43.16006,
+        "lon": -79.23475,
+        "n": 1077,
+        "mae": 3.2458069426592897,
+        "skill_vs_persistence": 0.12247917555867016
+      },
+      {
+        "site_id": 13,
+        "name": "BRANTFORD - 324 GRAND RIVER AVE.",
+        "lat": 43.13861,
+        "lon": -80.29264,
+        "n": 1072,
+        "mae": 3.3071686623401244,
+        "skill_vs_persistence": 0.205883114482607
+      },
+      {
+        "site_id": 14,
+        "name": "KITCHENER - WEST AVE. & HOMEWOOD",
+        "lat": 43.44383,
+        "lon": -80.50381,
+        "n": 1070,
+        "mae": 3.361037856736356,
+        "skill_vs_persistence": 0.23131235953950668
+      },
+      {
+        "site_id": 15,
+        "name": "OAKVILLE - 8TH LINE/GLENASHTON DR.",
+        "lat": 43.48692,
+        "lon": -79.70228,
+        "n": 1086,
+        "mae": 3.4002850961666784,
+        "skill_vs_persistence": 0.23376734856906523
+      },
+      {
+        "site_id": 16,
+        "name": "OSHAWA - BRITANNIA AVE. WEST",
+        "lat": 43.95222,
+        "lon": -78.9125,
+        "n": 779,
+        "mae": 3.121589692586109,
+        "skill_vs_persistence": 0.19895325768475336
+      },
+      {
+        "site_id": 17,
+        "name": "GUELPH - EXHIBITION PARK ARENA",
+        "lat": 43.551636,
+        "lon": -80.264156,
+        "n": 1081,
+        "mae": 3.292824783060274,
+        "skill_vs_persistence": 0.19669111871309752
+      },
+      {
+        "site_id": 18,
+        "name": "SIMCOE - EXPERIMENTAL FARM",
+        "lat": 42.85685,
+        "lon": -80.26964,
+        "n": 751,
+        "mae": 2.93765505943941,
+        "skill_vs_persistence": 0.2235116285578841
+      },
+      {
+        "site_id": 19,
+        "name": "BURLINGTON - HWY 2 & NORTH SHORE BLVD.",
+        "lat": 43.314575,
+        "lon": -79.802756,
+        "n": 722,
+        "mae": 3.9658891068727256,
+        "skill_vs_persistence": 0.18278029944026208
+      },
+      {
+        "site_id": 20,
+        "name": "EGBERT",
+        "lat": 44.23106,
+        "lon": -79.7831,
+        "n": 273,
+        "mae": 3.9765483324505384,
+        "skill_vs_persistence": 0.09434507164583539
+      },
+      {
+        "site_id": 21,
+        "name": "BARRIE - OLD PUC",
+        "lat": 44.382314,
+        "lon": -79.702431,
+        "n": 719,
+        "mae": 3.776704240938831,
+        "skill_vs_persistence": 0.20643260187174295
+      },
+      {
+        "site_id": 22,
+        "name": "NEWMARKET - EAGLE ST. & MCAFFREY RD.",
+        "lat": 44.04431,
+        "lon": -79.48325,
+        "n": 717,
+        "mae": 3.7036451303295506,
+        "skill_vs_persistence": 0.21846503890252877
+      },
+      {
+        "site_id": 23,
+        "name": "MILTON - 1120 MAIN ST EAST",
+        "lat": 43.52965,
+        "lon": -79.862449,
+        "n": 722,
+        "mae": 3.7608276031985524,
+        "skill_vs_persistence": 0.25514621991564934
+      },
+      {
+        "site_id": 93,
+        "name": "Tonawanda II",
+        "lat": 42.9981,
+        "lon": -78.8993,
+        "n": 6,
+        "mae": 4.172360263698143,
+        "skill_vs_persistence": -3.095233368589703
+      },
+      {
+        "site_id": 143,
+        "name": "Buffalo",
+        "lat": 42.8781,
+        "lon": -78.8094,
+        "n": 311,
+        "mae": 3.3805963798484364,
+        "skill_vs_persistence": 0.21995112542263517
+      }
+    ]
+  },
+  "holdout": {
+    "model": {
+      "n": 6718,
+      "mae": 3.797906485597014,
+      "rmse": 9.703244547555322,
+      "r2": 0.27473567652608955,
+      "skill_vs_persistence": 0.22803824266974293
+    },
+    "persistence": {
+      "n": 6718,
+      "mae": 4.919811699910688,
+      "rmse": 12.069062411124822,
+      "r2": -0.12204280962905223,
+      "skill_vs_persistence": 0.0
+    },
+    "climatology": {
+      "n": 6718,
+      "mae": 4.737160154107913,
+      "rmse": 11.368532628046495,
+      "r2": 0.004431410756139953,
+      "skill_vs_persistence": 0.037125718816858444
+    },
+    "high_pollution_days": {
+      "threshold_ug_m3": 12.970600000000008,
+      "model": {
+        "n": 672,
+        "mae": 14.894239243108002,
+        "rmse": 28.96270966520378,
+        "r2": 0.02912116648082641,
+        "skill_vs_persistence": 0.20582493576938865
+      },
+      "persistence": {
+        "n": 672,
+        "mae": 18.75435267857143,
+        "rmse": 34.976633727819774,
+        "r2": -0.415932889802177
+      },
+      "climatology": {
+        "n": 672,
+        "mae": 17.22580056431852,
+        "rmse": 33.49974695641025,
+        "r2": -0.2988820188123438
+      }
+    },
+    "interval_80": {
+      "coverage": 0.5890145876749032,
+      "mean_width": 5.54796575319565
+    },
+    "aqhi_category": {
+      "model": {
+        "n": 5991,
+        "accuracy": 0.7918544483391754
+      },
+      "persistence": {
+        "n": 6002,
+        "accuracy": 0.7545818060646451
+      },
+      "eccc_forecast": {
+        "n": 17,
+        "accuracy": 0.9411764705882353
+      },
+      "model_on_eccc_days": {
+        "n": 17,
+        "accuracy": 0.9411764705882353
+      },
+      "eccc_overlap_days": 1
+    },
+    "low_cost_sensors": {
+      "model": {
+        "n": 11965,
+        "mae": 6.5935850939970315,
+        "rmse": 11.397743709444661,
+        "r2": 0.22348515532437763,
+        "skill_vs_persistence": 0.08352547908245689
+      },
+      "persistence": {
+        "n": 11965,
+        "mae": 7.1945099874634355,
+        "rmse": 13.669099935501226,
+        "r2": -0.11684222604602645
+      },
+      "sites": 57
+    }
+  },
+  "notes": [
+    "low-cost sensors are excluded from training and scored separately",
+    "the deployed model is refit on all rows (training pool + holdout) after this one-time evaluation"
+  ]
+}
