@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Air Quality Pipeline</title>
+  <meta name="description" content="Southern Ontario air quality now, and an experimental PM2.5 forecast for tomorrow.">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Inter:wght@400;600;700&display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"
+        integrity="sha384-c6Rcwz4e4CITMbu/NBmnNS8yN2sC3cUElMEMfP3vqqKFp7GOYaaBBCqmaWBjmkjb" crossorigin="anonymous">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-page="map">
+<div class="sheet">
+  <header class="masthead">
+    <h1>Air Quality Pipeline</h1>
+    <p class="masthead__sub">Southern Ontario air quality now, and an experimental forecast for tomorrow. <span id="refreshed"></span></p>
+    <nav class="nav"><a href="index.html" aria-current="page">Map</a><a href="forecast.html">Forecast</a><a href="pipeline.html">Pipeline</a></nav>
+  </header>
+  <main>
+    <p class="notice" id="summary">Loading…</p>
+    <div class="split">
+      <section class="panel">
+        <div class="toolbar">
+          <h2>Stations by AQHI</h2>
+          <div role="group" aria-label="Colour stations by">
+            <button id="show-now" aria-pressed="true">Now</button>
+            <button id="show-tomorrow" aria-pressed="false">Tomorrow</button>
+          </div>
+        </div>
+        <div id="map" class="map" aria-label="Map of stations; the same stations are listed below"></div>
+        <p class="note">Official ECCC AQHI where a station has one, otherwise computed here. Small dots are low-cost sensors.</p>
+      </section>
+      <aside class="panel" id="station" aria-live="polite"><p class="note">Pick a station for its last 7 days and tomorrow's forecast.</p></aside>
+    </div>
+    <section class="panel">
+      <details>
+        <summary>All stations</summary>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Station</th><th>Type</th><th>AQHI</th><th class="num">PM2.5 now</th><th class="num">Tomorrow</th></tr></thead>
+          <tbody id="list"></tbody>
+        </table></div>
+      </details>
+    </section>
+  </main>
+  <footer class="footer"></footer>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"
+        integrity="sha384-NElt3Op+9NBMCYaef5HxeJmU4Xeard/Lku8ek6hoPTvYkQPh3zLIrJP7KiRocsxO" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"
+        integrity="sha384-bs/nf9FbdNouRbMiFcrcZfLXYPKiPaGVGplVbv7dLGECccEXDW+S3zjqSKR5ZEaD" crossorigin="anonymous"></script>
+<script src="app.js"></script>
+</body>
+</html>

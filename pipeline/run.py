@@ -13,7 +13,7 @@ import time
 import traceback
 from collections import defaultdict
 
-from pipeline import config, db, extract, plan, sources
+from pipeline import config, db, extract, plan, publish, sources, storage
 from pipeline import watermark as wm
 
 # station metadata goes first so measurement merges can find their stations (adf runs these in an earlier loop)
@@ -87,6 +87,24 @@ def limit_items(items, only=None, max_per_source=None):
     return kept
 
 
+def model_step(conn, run_id, retrain=None):
+    """Retrain on mondays (local time) or when there's no model yet, then predict tomorrow. /api/model does the same."""
+    from model import predict, train
+
+    t_step = time.monotonic()
+    if retrain is None:
+        retrain = predict.today_local().weekday() == 0 or not storage.get_storage().exists("models/latest.json")
+    message = {}
+    if retrain:
+        metrics = train.run(write=True)
+        message["retrained"] = metrics["model_version"]
+    message.update(predict.run(run_id=run_id))
+    db.call(conn, "etl.usp_log_stage", run_id=run_id, stage="model", seconds=round(time.monotonic() - t_step, 3),
+            rows_written=message.get("forecasts"), message=json.dumps(message))
+    print(f"model ({'retrained, ' if retrain else ''}{message.get('forecasts')} forecasts, "
+          f"{time.monotonic() - t_step:.1f}s)")
+
+
 def run_pipeline(mode, trigger="manual", target="local", only=None, max_per_source=None):
     started = time.monotonic()
     with db.connect() as conn:
@@ -128,6 +146,14 @@ def run_pipeline(mode, trigger="manual", target="local", only=None, max_per_sour
                 t_step = time.monotonic()
                 db.call(conn, proc, run_id=run_id, **params)
                 print(f"{label} ({time.monotonic() - t_step:.1f}s)")
+
+            model_step(conn, run_id)
+            t_step = time.monotonic()
+            written = publish.run(run_id)
+            db.call(conn, "etl.usp_log_stage", run_id=run_id, stage="publish",
+                    seconds=round(time.monotonic() - t_step, 3), rows_written=len(written),
+                    message=json.dumps(written)[:4000])
+            print(f"publish ({time.monotonic() - t_step:.1f}s)")
 
             db.call(conn, "etl.usp_end_run", run_id=run_id, status="succeeded")
             print(f"run {run_id} succeeded in {(time.monotonic() - started) / 60:.1f} min")

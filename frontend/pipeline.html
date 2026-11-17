@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Air Quality Pipeline · Pipeline</title>
+  <meta name="description" content="Every pipeline run, full vs incremental refresh times, sources and data-quality checks.">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Inter:wght@400;600;700&display=swap">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-page="pipeline">
+<div class="sheet">
+  <header class="masthead">
+    <h1>Pipeline</h1>
+    <p class="masthead__sub">Runs, refresh times, sources and data-quality checks. <span id="refreshed"></span></p>
+    <nav class="nav"><a href="index.html">Map</a><a href="forecast.html">Forecast</a><a href="pipeline.html" aria-current="page">Pipeline</a></nav>
+  </header>
+  <main>
+    <p class="notice" id="bench">Loading…</p>
+    <div class="split">
+      <section class="panel">
+        <h2>Sources</h2>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Source</th><th>Latest data</th><th class="num">Rows</th></tr></thead>
+          <tbody id="sources"></tbody>
+        </table></div>
+      </section>
+      <section class="panel">
+        <h2>Checks (latest run)</h2>
+        <div class="table-wrap"><table><tbody id="checks"></tbody></table></div>
+      </section>
+    </div>
+    <section class="panel">
+      <h2>Last 30 runs</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th class="num">Run</th><th>Started</th><th>Mode</th><th>Where</th><th>Status</th><th class="num">Duration</th><th class="num">Rows inserted</th></tr></thead>
+        <tbody id="runs"></tbody>
+      </table></div>
+    </section>
+  </main>
+  <footer class="footer"></footer>
+</div>
+<script src="app.js"></script>
+</body>
+</html>
