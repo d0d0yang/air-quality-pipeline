@@ -1,0 +1,15 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": { "value": "canadacentral" },
+    "prefix": { "value": "aqp" },
+    "sqlAdminLogin": { "value": "aqadmin" },
+    "sqlAdminPassword": { "value": "<from .env AZ_SQL_ADMIN_PASSWORD, never commit>" },
+    "sqlEtlPassword": { "value": "<from .env AZ_SQL_ETL_PASSWORD, never commit>" },
+    "openaqApiKey": { "value": "<from .env OPENAQ_API_KEY, never commit>" },
+    "deployerIp": { "value": "<your public ip; deploy.py looks it up>" },
+    "functionKey": { "value": "" },
+    "refreshSchedule": { "value": "daily" }
+  }
+}

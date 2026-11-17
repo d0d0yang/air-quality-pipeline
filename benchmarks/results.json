@@ -1,0 +1,95 @@
+{
+  "runs": [
+    {
+      "run_id": 7,
+      "status": "succeeded",
+      "duration_s": 179.43,
+      "rows_read": 26562,
+      "rows_inserted": 101,
+      "rows_updated": 3033,
+      "started_utc": "2026-11-17T08:07:49Z",
+      "target": "local",
+      "scenario": "incremental_daily"
+    },
+    {
+      "run_id": 8,
+      "status": "succeeded",
+      "duration_s": 174.914,
+      "rows_read": 21557,
+      "rows_inserted": 0,
+      "rows_updated": 0,
+      "started_utc": "2026-11-17T08:10:48Z",
+      "target": "local",
+      "scenario": "incremental_noop"
+    },
+    {
+      "run_id": 9,
+      "status": "succeeded",
+      "duration_s": 178.266,
+      "rows_read": 26557,
+      "rows_inserted": 96,
+      "rows_updated": 0,
+      "started_utc": "2026-11-17T08:13:43Z",
+      "target": "local",
+      "scenario": "incremental_daily"
+    },
+    {
+      "run_id": 10,
+      "status": "succeeded",
+      "duration_s": 173.205,
+      "rows_read": 21838,
+      "rows_inserted": 281,
+      "rows_updated": 0,
+      "started_utc": "2026-11-17T08:16:42Z",
+      "target": "local",
+      "scenario": "incremental_noop"
+    },
+    {
+      "run_id": 11,
+      "status": "succeeded",
+      "duration_s": 175.249,
+      "rows_read": 26535,
+      "rows_inserted": 72,
+      "rows_updated": 0,
+      "started_utc": "2026-11-17T08:19:35Z",
+      "target": "local",
+      "scenario": "incremental_daily"
+    },
+    {
+      "run_id": 12,
+      "status": "succeeded",
+      "duration_s": 174.942,
+      "rows_read": 21559,
+      "rows_inserted": 0,
+      "rows_updated": 43,
+      "started_utc": "2026-11-17T08:22:30Z",
+      "target": "local",
+      "scenario": "incremental_noop"
+    }
+  ],
+  "targets": {
+    "local": {
+      "scenarios": {
+        "incremental_daily": {
+          "runs": [
+            179.43,
+            178.266,
+            175.249
+          ],
+          "median_s": 178.266
+        },
+        "incremental_noop": {
+          "runs": [
+            174.914,
+            173.205,
+            174.942
+          ],
+          "median_s": 174.914
+        }
+      },
+      "reduction_pct": null
+    }
+  },
+  "generated_utc": "2026-11-17T08:25:25Z",
+  "definition": "wall-clock duration of the whole pipeline run (etl.pipeline_run started_at -> ended_at); median of all recorded runs per scenario; reduction = 1 - median(incremental_daily) / median(full)"
+}

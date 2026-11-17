@@ -13,18 +13,12 @@ import sys
 from datetime import UTC, datetime, timedelta
 
 from pipeline import aqhi, config, db, storage
+from pipeline.schema import SCHEMA, validate  # noqa: F401 - re-exported for callers
 
 FRONTEND_DATA = config.ROOT / "frontend" / "data"
 MAP_HOURS = 7 * 24
 OFFICIAL_AQHI_MAX_AGE_H = 3
 
-# the keys each file must have; validate() checks them and the pages workflow runs it before committing
-SCHEMA = {
-    "summary.json": ["generated_utc", "last_run", "region", "sites", "regional", "attributions"],
-    "stations.json": ["generated_utc", "hours_start_utc", "stations"],
-    "forecast.json": ["generated_utc", "model_version", "metrics", "holdout", "spatial", "sites"],
-    "pipeline.json": ["generated_utc", "runs", "freshness", "dq", "row_counts"],
-}
 
 
 def rows(conn, sql, *params):
@@ -260,13 +254,6 @@ def build_pipeline(conn, now):
 
 
 # --- write --------------------------------------------------------------------------------------
-
-
-def validate(name, payload):
-    missing = [k for k in SCHEMA[name] if k not in payload]
-    if missing:
-        raise ValueError(f"{name} is missing {missing}")
-    return True
 
 
 def run(run_id=None, local_copy=None):

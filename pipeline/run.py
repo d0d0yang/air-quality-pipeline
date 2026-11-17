@@ -96,8 +96,11 @@ def model_step(conn, run_id, retrain=None):
         retrain = predict.today_local().weekday() == 0 or not storage.get_storage().exists("models/latest.json")
     message = {}
     if retrain:
-        metrics = train.run(write=True)
-        message["retrained"] = metrics["model_version"]
+        # first ever run: full selection + evaluation; after that the weekly retrain is a refit
+        if storage.get_storage().exists("models/metrics.json"):
+            message["retrained"] = train.refit()
+        else:
+            message["retrained"] = train.run(write=True)["model_version"]
     message.update(predict.run(run_id=run_id))
     db.call(conn, "etl.usp_log_stage", run_id=run_id, stage="model", seconds=round(time.monotonic() - t_step, 3),
             rows_written=message.get("forecasts"), message=json.dumps(message))

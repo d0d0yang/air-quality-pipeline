@@ -1,0 +1,10 @@
+{
+  "name": "ds_sql_lookup",
+  "properties": {
+    "description": "no table: lets Lookup activities call procs that return a row (etl.usp_start_run)",
+    "linkedServiceName": { "referenceName": "ls_sql", "type": "LinkedServiceReference" },
+    "type": "AzureSqlTable",
+    "typeProperties": {},
+    "schema": []
+  }
+}

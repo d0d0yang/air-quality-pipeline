@@ -1,0 +1,63 @@
+# pages.yml
+# deploys the dashboard. daily (after the 06:00 toronto adf run) it first pulls the published json with a
+# read-only sas url, commits it if anything changed, and deploys in the same workflow, because commits made
+# with GITHUB_TOKEN don't trigger other workflows. without the secret it just deploys the committed snapshot.
+
+name: pages
+
+on:
+  push:
+    branches: [main]
+    paths: ["frontend/**"]
+  schedule:
+    - cron: "0 13 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    env:
+      PUBLISHED_DATA_SAS_URL: ${{ secrets.PUBLISHED_DATA_SAS_URL }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        if: env.PUBLISHED_DATA_SAS_URL != ''
+        with:
+          python-version: "3.13"
+
+      - name: pull published data
+        if: env.PUBLISHED_DATA_SAS_URL != ''
+        run: python -m scripts.pull_published
+
+      - name: commit if changed
+        if: env.PUBLISHED_DATA_SAS_URL != ''
+        run: |
+          if [ -n "$(git status --porcelain frontend/data)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add frontend/data
+            git commit -m "data: daily refresh $(date -u +%Y-%m-%d)"
+            git push
+          else
+            echo "no changes in the published data"
+          fi
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: frontend
+      - id: deployment
+        uses: actions/deploy-pages@v4

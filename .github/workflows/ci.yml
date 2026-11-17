@@ -1,0 +1,73 @@
+# ci.yml
+# lint, unit tests, database tests against a sql server service container, bicep build, and a grep that fails
+# the build if anything that looks like a real secret gets committed.
+
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      # throwaway passwords for the service container only
+      LOCAL_SA_PASSWORD: Ci!Sa${{ github.run_id }}x
+      LOCAL_ETL_PASSWORD: Ci!Etl${{ github.run_id }}x
+      DEV_CACHE: "0"
+    services:
+      sqlserver:
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        env:
+          ACCEPT_EULA: "Y"
+          MSSQL_SA_PASSWORD: Ci!Sa${{ github.run_id }}x
+        ports:
+          - 1433:1433
+        options: >-
+          --health-cmd "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P \"$MSSQL_SA_PASSWORD\" -C -Q 'SELECT 1' -b"
+          --health-interval 10s --health-timeout 5s --health-retries 15 --health-start-period 20s
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: secret scan
+        run: |
+          # real-looking secrets only; the patterns skip {PLACEHOLDER} templates and this file
+          if git ls-files -z | grep -zv '^.github/workflows/ci.yml$' | xargs -0 grep -nIE \
+              'AccountKey=[A-Za-z0-9+/=]{20,}|SharedAccessSignature=|[?&]sig=[A-Za-z0-9%+/=]{20,}|Pwd=[^{;"'"'"' ]{12,}|X-API-Key: *[A-Za-z0-9]{20,}|OPENAQ_API_KEY=[A-Za-z0-9]{10,}|-----BEGIN [A-Z ]*PRIVATE KEY'; then
+            echo "possible secret committed (see lines above)"; exit 1
+          fi
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+
+      - name: odbc driver 18
+        run: |
+          if ! odbcinst -q -d 2>/dev/null | grep -q "ODBC Driver 18"; then
+            curl -sSL -O "https://packages.microsoft.com/config/ubuntu/$(. /etc/os-release && echo $VERSION_ID)/packages-microsoft-prod.deb"
+            sudo dpkg -i packages-microsoft-prod.deb
+            sudo apt-get update
+            sudo ACCEPT_EULA=Y apt-get install -y msodbcsql18
+          fi
+
+      - name: install
+        run: pip install -r requirements.txt -r requirements-dev.txt
+
+      - name: ruff
+        run: ruff check .
+
+      - name: unit tests
+        run: pytest
+
+      - name: database tests
+        run: pytest -m db
+
+      - name: bicep build
+        if: hashFiles('infra/main.bicep') != ''
+        run: az bicep build --file infra/main.bicep --stdout > /dev/null

@@ -1,0 +1,22 @@
+{
+  "name": "tr_refresh",
+  "properties": {
+    "description": "06:00 toronto time, daily (weekly on mondays when REFRESH_SCHEDULE=weekly; deploy.py rewrites the recurrence)",
+    "type": "ScheduleTrigger",
+    "typeProperties": {
+      "recurrence": {
+        "frequency": "Day",
+        "interval": 1,
+        "startTime": "2026-11-18T06:00:00",
+        "timeZone": "Eastern Standard Time",
+        "schedule": { "hours": [6], "minutes": [0] }
+      }
+    },
+    "pipelines": [
+      {
+        "pipelineReference": { "referenceName": "pl_daily_refresh", "type": "PipelineReference" },
+        "parameters": { "mode": "incremental" }
+      }
+    ]
+  }
+}

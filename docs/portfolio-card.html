@@ -1,0 +1,37 @@
+<!-- portfolio-card.html
+     a self-contained card for the portfolio site. copy the <article> and its <style>, or rebuild it with the
+     site's own components using the same text and links. -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Air Quality Pipeline · portfolio card</title>
+  <style>
+    .aq-card { max-width: 560px; font: 15px/1.5 Inter, system-ui, sans-serif; color: #151a1d; background: #fff;
+      border: 1px solid #C8CCC2; border-radius: 8px; padding: 20px; }
+    .aq-card h3 { margin: 0 0 4px; font-size: 20px; }
+    .aq-card p { margin: 0 0 12px; color: #606760; }
+    .aq-card ul { display: flex; flex-wrap: wrap; gap: 6px; list-style: none; padding: 0; margin: 0 0 16px; }
+    .aq-card li { font-size: 12px; background: #dce8e7; color: #306f6e; border-radius: 999px; padding: 2px 10px; }
+    .aq-card a { display: inline-block; margin-right: 8px; padding: 6px 14px; border-radius: 6px; text-decoration: none;
+      border: 1px solid #306f6e; color: #306f6e; font-weight: 600; font-size: 14px; }
+    .aq-card a.primary { background: #306f6e; color: #fff; }
+  </style>
+</head>
+<body style="background:#f5f1eb;padding:24px">
+  <article class="aq-card">
+    <h3>Air Quality Pipeline</h3>
+    <p>A daily Azure Data Factory pipeline that pulls hourly pollution and weather data for Southern Ontario into
+      Azure SQL, cleans and links it with Python and T-SQL, and forecasts tomorrow's PM2.5 at every monitoring
+      station on a public map.</p>
+    <ul>
+      <li>Python</li><li>SQL</li><li>scikit-learn</li><li>Azure Data Factory</li><li>Azure SQL Database</li>
+      <li>Azure Functions</li><li>Leaflet</li>
+    </ul>
+    <a class="primary" href="https://d0d0yang.github.io/air-quality-pipeline/">Live map</a>
+    <a href="https://d0d0yang.github.io/air-quality-pipeline/pipeline.html">Pipeline runs</a>
+    <a href="https://github.com/d0d0yang/air-quality-pipeline">Code</a>
+  </article>
+</body>
+</html>

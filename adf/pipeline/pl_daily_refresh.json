@@ -1,0 +1,246 @@
+{
+  "name": "pl_daily_refresh",
+  "properties": {
+    "description": "Daily refresh: plan work items from watermarks, load each one, link and match stations, refresh the mart, check quality, forecast, publish. Any failure skips the rest and closes the run as failed.",
+    "parameters": {
+      "mode": { "type": "String", "defaultValue": "incremental" }
+    },
+    "activities": [
+      {
+        "name": "start_run",
+        "type": "Lookup",
+        "policy": { "timeout": "0.00:10:00", "retry": 1, "retryIntervalInSeconds": 60 },
+        "typeProperties": {
+          "source": {
+            "type": "AzureSqlSource",
+            "sqlReaderStoredProcedureName": "etl.usp_start_run",
+            "storedProcedureParameters": {
+              "mode": { "type": "String", "value": { "value": "@pipeline().parameters.mode", "type": "Expression" } },
+              "target": { "type": "String", "value": "azure" },
+              "trigger_name": { "type": "String", "value": { "value": "@pipeline().TriggerName", "type": "Expression" } }
+            }
+          },
+          "dataset": { "referenceName": "ds_sql_lookup", "type": "DatasetReference" },
+          "firstRowOnly": true
+        }
+      },
+      {
+        "name": "plan",
+        "type": "AzureFunctionActivity",
+        "dependsOn": [ { "activity": "start_run", "dependencyConditions": [ "Succeeded" ] } ],
+        "policy": { "timeout": "0.00:05:00", "retry": 1, "retryIntervalInSeconds": 60 },
+        "linkedServiceName": { "referenceName": "ls_function", "type": "LinkedServiceReference" },
+        "typeProperties": {
+          "functionName": "plan",
+          "method": "POST",
+          "body": {
+            "value": "@json(concat('{\"run_id\":', string(activity('start_run').output.firstRow.run_id), ',\"mode\":\"', pipeline().parameters.mode, '\"}'))",
+            "type": "Expression"
+          }
+        }
+      },
+      {
+        "name": "load_metadata",
+        "description": "station lists first, so measurement merges can find their stations",
+        "type": "ForEach",
+        "dependsOn": [ { "activity": "plan", "dependencyConditions": [ "Succeeded" ] } ],
+        "typeProperties": {
+          "items": { "value": "@activity('plan').output.items_meta", "type": "Expression" },
+          "isSequential": true,
+          "activities": [
+            {
+              "name": "load_metadata_item",
+              "type": "ExecutePipeline",
+              "typeProperties": {
+                "pipeline": { "referenceName": "pl_load_item", "type": "PipelineReference" },
+                "waitOnCompletion": true,
+                "parameters": {
+                  "run_id": { "value": "@string(activity('start_run').output.firstRow.run_id)", "type": "Expression" },
+                  "item": { "value": "@item()", "type": "Expression" }
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "name": "load_rate_limited",
+        "description": "openaq items one at a time, so the 60/min and 2,000/h limits hold across items",
+        "type": "ForEach",
+        "dependsOn": [ { "activity": "load_metadata", "dependencyConditions": [ "Succeeded" ] } ],
+        "typeProperties": {
+          "items": { "value": "@activity('plan').output.items_sequential", "type": "Expression" },
+          "isSequential": true,
+          "activities": [
+            {
+              "name": "load_rate_limited_item",
+              "type": "ExecutePipeline",
+              "typeProperties": {
+                "pipeline": { "referenceName": "pl_load_item", "type": "PipelineReference" },
+                "waitOnCompletion": true,
+                "parameters": {
+                  "run_id": { "value": "@string(activity('start_run').output.firstRow.run_id)", "type": "Expression" },
+                  "item": { "value": "@item()", "type": "Expression" }
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "name": "load_parallel",
+        "description": "everything else, four at a time (each item only replaces its own stg rows)",
+        "type": "ForEach",
+        "dependsOn": [ { "activity": "load_metadata", "dependencyConditions": [ "Succeeded" ] } ],
+        "typeProperties": {
+          "items": { "value": "@activity('plan').output.items_parallel", "type": "Expression" },
+          "isSequential": false,
+          "batchCount": 4,
+          "activities": [
+            {
+              "name": "load_parallel_item",
+              "type": "ExecutePipeline",
+              "typeProperties": {
+                "pipeline": { "referenceName": "pl_load_item", "type": "PipelineReference" },
+                "waitOnCompletion": true,
+                "parameters": {
+                  "run_id": { "value": "@string(activity('start_run').output.firstRow.run_id)", "type": "Expression" },
+                  "item": { "value": "@item()", "type": "Expression" }
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "name": "link_stations",
+        "type": "SqlServerStoredProcedure",
+        "dependsOn": [
+          { "activity": "load_rate_limited", "dependencyConditions": [ "Succeeded" ] },
+          { "activity": "load_parallel", "dependencyConditions": [ "Succeeded" ] }
+        ],
+        "policy": { "timeout": "0.00:10:00", "retry": 1, "retryIntervalInSeconds": 60 },
+        "linkedServiceName": { "referenceName": "ls_sql", "type": "LinkedServiceReference" },
+        "typeProperties": {
+          "storedProcedureName": "core.usp_link_stations",
+          "storedProcedureParameters": {
+            "run_id": { "type": "Int32", "value": { "value": "@activity('start_run').output.firstRow.run_id", "type": "Expression" } }
+          }
+        }
+      },
+      {
+        "name": "match_weather",
+        "type": "SqlServerStoredProcedure",
+        "dependsOn": [ { "activity": "link_stations", "dependencyConditions": [ "Succeeded" ] } ],
+        "policy": { "timeout": "0.00:10:00", "retry": 1, "retryIntervalInSeconds": 60 },
+        "linkedServiceName": { "referenceName": "ls_sql", "type": "LinkedServiceReference" },
+        "typeProperties": {
+          "storedProcedureName": "core.usp_match_stations",
+          "storedProcedureParameters": {
+            "run_id": { "type": "Int32", "value": { "value": "@activity('start_run').output.firstRow.run_id", "type": "Expression" } },
+            "max_match_km": { "type": "Double", "value": "25" }
+          }
+        }
+      },
+      {
+        "name": "refresh_mart",
+        "type": "SqlServerStoredProcedure",
+        "dependsOn": [ { "activity": "match_weather", "dependencyConditions": [ "Succeeded" ] } ],
+        "policy": { "timeout": "0.01:00:00", "retry": 1, "retryIntervalInSeconds": 60 },
+        "linkedServiceName": { "referenceName": "ls_sql", "type": "LinkedServiceReference" },
+        "typeProperties": {
+          "storedProcedureName": "mart.usp_refresh",
+          "storedProcedureParameters": {
+            "run_id": { "type": "Int32", "value": { "value": "@activity('start_run').output.firstRow.run_id", "type": "Expression" } }
+          }
+        }
+      },
+      {
+        "name": "dq_checks",
+        "description": "throws when an error-level check fails, which fails the run",
+        "type": "SqlServerStoredProcedure",
+        "dependsOn": [ { "activity": "refresh_mart", "dependencyConditions": [ "Succeeded" ] } ],
+        "policy": { "timeout": "0.00:10:00", "retry": 0 },
+        "linkedServiceName": { "referenceName": "ls_sql", "type": "LinkedServiceReference" },
+        "typeProperties": {
+          "storedProcedureName": "etl.usp_run_dq_checks",
+          "storedProcedureParameters": {
+            "run_id": { "type": "Int32", "value": { "value": "@activity('start_run').output.firstRow.run_id", "type": "Expression" } },
+            "max_match_km": { "type": "Double", "value": "25" }
+          }
+        }
+      },
+      {
+        "name": "model",
+        "description": "refits the model on mondays (toronto time), forecasts tomorrow every day",
+        "type": "AzureFunctionActivity",
+        "dependsOn": [ { "activity": "dq_checks", "dependencyConditions": [ "Succeeded" ] } ],
+        "policy": { "timeout": "0.00:05:00", "retry": 1, "retryIntervalInSeconds": 60 },
+        "linkedServiceName": { "referenceName": "ls_function", "type": "LinkedServiceReference" },
+        "typeProperties": {
+          "functionName": "model",
+          "method": "POST",
+          "body": {
+            "value": "@json(concat('{\"run_id\":', string(activity('start_run').output.firstRow.run_id), ',\"retrain\":', if(equals(dayOfWeek(convertFromUtc(utcNow(), 'Eastern Standard Time')), 1), 'true', 'false'), '}'))",
+            "type": "Expression"
+          }
+        }
+      },
+      {
+        "name": "publish",
+        "type": "AzureFunctionActivity",
+        "dependsOn": [ { "activity": "model", "dependencyConditions": [ "Succeeded" ] } ],
+        "policy": { "timeout": "0.00:05:00", "retry": 1, "retryIntervalInSeconds": 60 },
+        "linkedServiceName": { "referenceName": "ls_function", "type": "LinkedServiceReference" },
+        "typeProperties": {
+          "functionName": "publish",
+          "method": "POST",
+          "body": {
+            "value": "@json(concat('{\"run_id\":', string(activity('start_run').output.firstRow.run_id), '}'))",
+            "type": "Expression"
+          }
+        }
+      },
+      {
+        "name": "end_run_succeeded",
+        "type": "SqlServerStoredProcedure",
+        "dependsOn": [ { "activity": "publish", "dependencyConditions": [ "Succeeded" ] } ],
+        "policy": { "timeout": "0.00:05:00", "retry": 2, "retryIntervalInSeconds": 30 },
+        "linkedServiceName": { "referenceName": "ls_sql", "type": "LinkedServiceReference" },
+        "typeProperties": {
+          "storedProcedureName": "etl.usp_end_run",
+          "storedProcedureParameters": {
+            "run_id": { "type": "Int32", "value": { "value": "@activity('start_run').output.firstRow.run_id", "type": "Expression" } },
+            "status": { "type": "String", "value": "succeeded" }
+          }
+        }
+      },
+      {
+        "name": "end_run_failed",
+        "description": "any failure skips everything after it, which skips end_run_succeeded and lands here",
+        "type": "SqlServerStoredProcedure",
+        "dependsOn": [ { "activity": "end_run_succeeded", "dependencyConditions": [ "Skipped", "Failed" ] } ],
+        "policy": { "timeout": "0.00:05:00", "retry": 2, "retryIntervalInSeconds": 30 },
+        "linkedServiceName": { "referenceName": "ls_sql", "type": "LinkedServiceReference" },
+        "typeProperties": {
+          "storedProcedureName": "etl.usp_end_run",
+          "storedProcedureParameters": {
+            "run_id": { "type": "Int32", "value": { "value": "@activity('start_run').output.firstRow.run_id", "type": "Expression" } },
+            "status": { "type": "String", "value": "failed" },
+            "error_message": { "type": "String", "value": { "value": "@concat('adf pipeline run ', pipeline().RunId, ' failed; see the failed activity in ADF monitor and etl.stage_run')", "type": "Expression" } }
+          }
+        }
+      },
+      {
+        "name": "fail_pipeline",
+        "description": "keeps the adf run marked as failed after the run log is closed",
+        "type": "Fail",
+        "dependsOn": [ { "activity": "end_run_failed", "dependencyConditions": [ "Completed" ] } ],
+        "typeProperties": {
+          "message": { "value": "@concat('pipeline run failed, run_id ', string(activity('start_run').output.firstRow.run_id))", "type": "Expression" },
+          "errorCode": "500"
+        }
+      }
+    ]
+  }
+}

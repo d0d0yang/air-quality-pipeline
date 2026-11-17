@@ -1,0 +1,10 @@
+{
+  "name": "ls_sql",
+  "properties": {
+    "description": "azure sql as etl_app. the connection string (with the password) is set by infra/main.bicep from a secure parameter, never committed.",
+    "type": "AzureSqlDatabase",
+    "typeProperties": {
+      "connectionString": "<set at deploy time>"
+    }
+  }
+}

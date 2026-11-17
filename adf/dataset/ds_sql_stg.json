@@ -1,0 +1,14 @@
+{
+  "name": "ds_sql_stg",
+  "properties": {
+    "description": "any stg table; the column names match the landing csv header, so Copy maps by name",
+    "linkedServiceName": { "referenceName": "ls_sql", "type": "LinkedServiceReference" },
+    "parameters": { "table": { "type": "String" } },
+    "type": "AzureSqlTable",
+    "typeProperties": {
+      "schema": "stg",
+      "table": { "value": "@dataset().table", "type": "Expression" }
+    },
+    "schema": []
+  }
+}

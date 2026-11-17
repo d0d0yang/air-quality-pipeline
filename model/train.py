@@ -317,6 +317,33 @@ def run(write=True, conn=None, score_holdout=True):
     return metrics
 
 
+def refit(conn=None):
+    """
+    The weekly retrain: the already-chosen model refit on every row up to now. Model choice and the holdout
+    evaluation (run()) are a deliberate offline step, so the daily function stays well inside its time limit.
+    """
+    store = storage.get_storage()
+    chosen = json.loads(store.read_bytes("models/metrics.json"))["chosen_model"]
+    own = conn is None
+    conn = conn or db.connect()
+    try:
+        rows = F.training_rows(F.build(F.load_mart(conn)))
+    finally:
+        if own:
+            conn.close()
+    X = F.FEATURES
+    version = f"{datetime.now(UTC):%Y%m%d}-{chosen}-refit"
+    bundle = {"version": version, "features": X, "chosen": chosen,
+              "model": candidates()[chosen].fit(rows[X], rows[F.TARGET]),
+              "q10": quantile_model(0.1).fit(rows[X], rows[F.TARGET]),
+              "q90": quantile_model(0.9).fit(rows[X], rows[F.TARGET])}
+    buf = io.BytesIO()
+    joblib.dump(bundle, buf)
+    store.write_bytes(f"models/{version}/model.joblib", buf.getvalue())
+    store.write_bytes("models/latest.json", json.dumps({"version": version}).encode())
+    return {"model_version": version, "rows": int(len(rows))}
+
+
 def save(bundle, metrics, holdout_frame):
     store = storage.get_storage()
     buf = io.BytesIO()

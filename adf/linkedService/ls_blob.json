@@ -1,0 +1,10 @@
+{
+  "name": "ls_blob",
+  "properties": {
+    "description": "the storage account (landing container). the connection string is set by infra/main.bicep at deploy time.",
+    "type": "AzureBlobStorage",
+    "typeProperties": {
+      "connectionString": "<set at deploy time>"
+    }
+  }
+}

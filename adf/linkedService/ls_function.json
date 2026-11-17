@@ -1,0 +1,12 @@
+{
+  "name": "ls_function",
+  "properties": {
+    "description": "the function app. the url and function key are set by infra/main.bicep / infra/deploy.py at deploy time.",
+    "type": "AzureFunction",
+    "typeProperties": {
+      "functionAppUrl": "<set at deploy time>",
+      "functionKey": { "type": "SecureString", "value": "<set at deploy time>" },
+      "authentication": "Anonymous"
+    }
+  }
+}

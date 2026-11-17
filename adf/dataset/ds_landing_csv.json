@@ -1,0 +1,24 @@
+{
+  "name": "ds_landing_csv",
+  "properties": {
+    "description": "a landing csv written by /api/extract: utf-8, header row, every field quoted",
+    "linkedServiceName": { "referenceName": "ls_blob", "type": "LinkedServiceReference" },
+    "parameters": { "path": { "type": "String" } },
+    "type": "DelimitedText",
+    "typeProperties": {
+      "location": {
+        "type": "AzureBlobStorageLocation",
+        "container": "landing",
+        "fileName": { "value": "@dataset().path", "type": "Expression" }
+      },
+      "columnDelimiter": ",",
+      "rowDelimiter": "\n",
+      "encodingName": "UTF-8",
+      "quoteChar": "\"",
+      "escapeChar": "\"",
+      "firstRowAsHeader": true,
+      "nullValue": ""
+    },
+    "schema": []
+  }
+}

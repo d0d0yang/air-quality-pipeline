@@ -1,0 +1,91 @@
+{
+  "name": "pl_load_item",
+  "properties": {
+    "description": "One work item: the function downloads and cleans it into a landing csv, Copy loads it into its stg table (replacing only this item's rows), the merge proc moves it into core, then the watermark moves. A failure stops before the watermark, so the item is retried next run.",
+    "parameters": {
+      "run_id": { "type": "String" },
+      "item": { "type": "Object" }
+    },
+    "activities": [
+      {
+        "name": "extract",
+        "type": "AzureFunctionActivity",
+        "policy": { "timeout": "0.00:05:00", "retry": 2, "retryIntervalInSeconds": 120 },
+        "linkedServiceName": { "referenceName": "ls_function", "type": "LinkedServiceReference" },
+        "typeProperties": {
+          "functionName": "extract",
+          "method": "POST",
+          "body": {
+            "value": "@json(concat('{\"run_id\":', pipeline().parameters.run_id, ',\"item\":', string(pipeline().parameters.item), '}'))",
+            "type": "Expression"
+          }
+        }
+      },
+      {
+        "name": "copy_to_stg",
+        "type": "Copy",
+        "dependsOn": [ { "activity": "extract", "dependencyConditions": [ "Succeeded" ] } ],
+        "policy": { "timeout": "0.01:00:00", "retry": 2, "retryIntervalInSeconds": 60 },
+        "typeProperties": {
+          "source": {
+            "type": "DelimitedTextSource",
+            "storeSettings": { "type": "AzureBlobStorageReadSettings", "recursive": false },
+            "formatSettings": { "type": "DelimitedTextReadSettings" }
+          },
+          "sink": {
+            "type": "AzureSqlSink",
+            "writeBatchSize": 20000,
+            "preCopyScript": {
+              "value": "@concat('DELETE FROM stg.', activity('extract').output.stg_table, ' WHERE item_id = ''', replace(pipeline().parameters.item.item_id, '''', ''''''), '''')",
+              "type": "Expression"
+            },
+            "tableOption": "none"
+          },
+          "enableStaging": false
+        },
+        "inputs": [
+          {
+            "referenceName": "ds_landing_csv",
+            "type": "DatasetReference",
+            "parameters": { "path": { "value": "@activity('extract').output.landing_path", "type": "Expression" } }
+          }
+        ],
+        "outputs": [
+          {
+            "referenceName": "ds_sql_stg",
+            "type": "DatasetReference",
+            "parameters": { "table": { "value": "@activity('extract').output.stg_table", "type": "Expression" } }
+          }
+        ]
+      },
+      {
+        "name": "merge",
+        "type": "SqlServerStoredProcedure",
+        "dependsOn": [ { "activity": "copy_to_stg", "dependencyConditions": [ "Succeeded" ] } ],
+        "policy": { "timeout": "0.01:00:00", "retry": 1, "retryIntervalInSeconds": 60 },
+        "linkedServiceName": { "referenceName": "ls_sql", "type": "LinkedServiceReference" },
+        "typeProperties": {
+          "storedProcedureName": { "value": "@activity('extract').output.merge_proc", "type": "Expression" },
+          "storedProcedureParameters": {
+            "run_id": { "type": "Int32", "value": { "value": "@int(pipeline().parameters.run_id)", "type": "Expression" } },
+            "item_id": { "type": "String", "value": { "value": "@pipeline().parameters.item.item_id", "type": "Expression" } }
+          }
+        }
+      },
+      {
+        "name": "apply_watermarks",
+        "type": "SqlServerStoredProcedure",
+        "dependsOn": [ { "activity": "merge", "dependencyConditions": [ "Succeeded" ] } ],
+        "policy": { "timeout": "0.00:05:00", "retry": 2, "retryIntervalInSeconds": 30 },
+        "linkedServiceName": { "referenceName": "ls_sql", "type": "LinkedServiceReference" },
+        "typeProperties": {
+          "storedProcedureName": "etl.usp_apply_watermarks",
+          "storedProcedureParameters": {
+            "run_id": { "type": "Int32", "value": { "value": "@int(pipeline().parameters.run_id)", "type": "Expression" } },
+            "json": { "type": "String", "value": { "value": "@activity('extract').output.new_watermark", "type": "Expression" } }
+          }
+        }
+      }
+    ]
+  }
+}
