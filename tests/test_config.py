@@ -18,12 +18,18 @@ def test_bbox_rejects_wrong_length():
         config._bbox("1,2,3")
 
 
-def test_local_conn_str_fills_password(monkeypatch):
+def test_local_conn_str_uses_etl_app(monkeypatch):
     monkeypatch.delenv("SQL_CONN_STR", raising=False)
-    monkeypatch.setenv("LOCAL_SA_PASSWORD", "not-a-real-pw")
+    monkeypatch.setenv("LOCAL_ETL_PASSWORD", "not-a-real-pw")
     conn = config.sql_conn_str()
-    assert "Pwd=not-a-real-pw;" in conn
-    assert "{LOCAL_SA_PASSWORD}" not in conn
+    assert "Uid=etl_app;Pwd=not-a-real-pw;" in conn
+    assert "{" + "LOCAL_ETL_PASSWORD}" not in conn
+
+
+def test_admin_conn_str_uses_sa(monkeypatch):
+    monkeypatch.delenv("SQL_ADMIN_CONN_STR", raising=False)
+    monkeypatch.setenv("LOCAL_SA_PASSWORD", "also-not-real")
+    assert "Uid=sa;Pwd=also-not-real;" in config.sql_conn_str(admin=True)
 
 
 @pytest.mark.db

@@ -176,13 +176,15 @@ def plan_openaq(mode, ctx, state, start, handover, now):
         # that's at most 960 hours, one page per request
         step = timedelta(days=OPENAQ_SEGMENT_DAYS)
         a = lo.replace(minute=0, second=0, microsecond=0)
+        first = True
         while a < hi:
             b = min(a + step, hi)
+            # first_segment lets the very first watermark be set; later ones must be contiguous with it
             segments.append({"sensor_id": s["sensor_id"], "location_id": s["location_id"],
-                             "pollutant": s["pollutant"], "low_cost": s["low_cost"],
+                             "pollutant": s["pollutant"], "low_cost": s["low_cost"], "first_segment": first,
                              "from": _iso(a), "to": _iso(b),
                              "est_requests": openaq_engine.estimate_requests((b - a).total_seconds() / 3600)})
-            a = b
+            a, first = b, False
 
     # pack segments into items under the request budget; fewer, fuller items mean fewer adf activities
     items, current, used = [], [], 0

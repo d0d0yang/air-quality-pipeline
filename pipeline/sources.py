@@ -26,7 +26,7 @@ SOURCES = [
         ("naps_id",), "file", note="naps station list (coordinates, site type, utc offset)",
     ),
     Source(
-        "naps_hourly", "naps_engine", "stg.naps_hourly", "core.usp_merge_naps_hourly",
+        "naps_hourly", "naps_engine", "stg.measurement", "core.usp_merge_measurement",
         ("station_id", "pollutant", "hour_utc", "source"), "file",
         note="validated hourly files, one per pollutant x year",
     ),
@@ -57,7 +57,7 @@ SOURCES = [
         ("sensor_id",), "none", sequential=True, note="locations, sensors, providers and licences",
     ),
     Source(
-        "openaq_hours", "openaq_engine", "stg.openaq_hours", "core.usp_merge_openaq_hours",
+        "openaq_hours", "openaq_engine", "stg.measurement", "core.usp_merge_measurement",
         ("station_id", "pollutant", "hour_utc", "source"), "sensor_hour", sequential=True,
         note="hourly sensor values after the last naps year",
     ),

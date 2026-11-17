@@ -140,6 +140,7 @@ def _openaq_hours(item, deadline):
         all_rows.extend(rows)
         sensor_marks.append({
             "sensor_id": seg["sensor_id"], "from": seg["from"], "to": seg["to"], "finished": finished,
+            "first_segment": seg.get("first_segment", False),
             "last_hour_utc": max((r[5] for r in rows), default=None),
         })
         if not finished:

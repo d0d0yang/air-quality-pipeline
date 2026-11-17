@@ -170,6 +170,15 @@ def test_climate_hourly_wind_direction_and_utc():
     assert calm[6] is None  # 0 means calm, which has no direction
 
 
+def test_climate_stations_take_decimal_coordinates_from_geometry():
+    # real values for st catharines a: the properties hold packed dms, the geometry holds decimals
+    feature = {"geometry": {"type": "Point", "coordinates": [-79.16666666666667, 43.2]},
+               "properties": {"CLIMATE_IDENTIFIER": "6137304", "STN_ID": 53000, "STATION_NAME": "ST CATHARINES A",
+                              "LATITUDE": 431200000, "LONGITUDE": -791000000, "ELEVATION": 97.8}}
+    row = list(ce.clean_climate_stations([feature], "item"))[0]
+    assert (row[4], row[5]) == (43.2, -79.16666666666667)
+
+
 def test_aqhi_forecasts_flatten_both_shapes():
     feats = json.loads((FIX / "geomet_aqhi_forecast_sample.json").read_text(encoding="utf-8"))
     rows = list(ce.clean_aqhi_forecasts(feats, "item"))

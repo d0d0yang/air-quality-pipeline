@@ -277,10 +277,13 @@ def clean_aqhi_forecasts(features, item_id):
 
 
 def clean_climate_stations(features, item_id):
+    # LATITUDE/LONGITUDE in this collection are packed degrees-minutes-seconds (431500000 = 43°15'00"),
+    # so the decimal coordinates come from the geometry instead
     for f in features:
         p = f["properties"]
-        yield [item_id, p["CLIMATE_IDENTIFIER"], p.get("STN_ID"), p.get("STATION_NAME"), p.get("LATITUDE"),
-               p.get("LONGITUDE"), p.get("ELEVATION"), p.get("HLY_FIRST_DATE"), p.get("HLY_LAST_DATE")]
+        lon, lat = (f.get("geometry") or {}).get("coordinates", [None, None])[:2]
+        yield [item_id, p["CLIMATE_IDENTIFIER"], p.get("STN_ID"), p.get("STATION_NAME"), lat, lon,
+               p.get("ELEVATION"), p.get("HLY_FIRST_DATE"), p.get("HLY_LAST_DATE")]
 
 
 def _wind_direction(tens_of_degrees):
