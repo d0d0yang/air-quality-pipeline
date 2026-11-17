@@ -11,8 +11,8 @@ from datetime import UTC, date, datetime, timedelta
 from pipeline import clean_engine, config, geomet_engine, naps_engine, openaq_engine, openmeteo_engine, sources
 from pipeline import watermark as wm
 
-OPENAQ_ITEM_SECONDS = 150  # leaves headroom under the 200 s budget per function call
-OPENAQ_INCREMENTAL_SENSORS = 10
+OPENAQ_ITEM_SECONDS = 120  # 100 requests at 50/min; a measured 125-request item took 155 s, too close to 200
+OPENAQ_SEGMENT_DAYS = 40
 OPENMETEO_FAIR_USE_PER_DAY = 10000
 
 
@@ -124,7 +124,8 @@ def plan_naps(mode, ctx, state):
         items.append(_item("naps_hourly", f"naps_hourly:{f['pollutant']}:{f['year']}",
                            {"path": f["path"], "pollutant": f["pollutant"], "year": f["year"],
                             "last_modified": f["last_modified"],
-                            "etag": state["source"].get(("naps_hourly_etag", f["path"]))}, 1))
+                            "etag": state["source"].get(("naps_hourly_etag", f["path"])),
+                            "sha256": state["source"].get(("naps_hourly_sha256", f["path"]))}, 1))
     return items
 
 
@@ -171,22 +172,22 @@ def plan_openaq(mode, ctx, state, start, handover, now):
         hi = min(now, (s["last"] + timedelta(hours=1)) if s["last"] else now)
         if hi <= lo:
             continue  # sensor stopped before the window we need
-        hours = (hi - lo).total_seconds() / 3600
-        # split long windows so no single segment needs more pages than one item can fetch
-        pages = openaq_engine.estimate_requests(hours)
-        chunks = math.ceil(pages / budget)
-        step = (hi - lo) / chunks
-        for i in range(chunks):
-            a, b = lo + step * i, (lo + step * (i + 1)) if i < chunks - 1 else hi
-            a = a.replace(minute=0, second=0, microsecond=0)
-            segments.append({"sensor_id": s["sensor_id"], "pollutant": s["pollutant"], "low_cost": s["low_cost"],
+        # the api times out (408) on long windows even with paging, so ask for 40 days at a time;
+        # that's at most 960 hours, one page per request
+        step = timedelta(days=OPENAQ_SEGMENT_DAYS)
+        a = lo.replace(minute=0, second=0, microsecond=0)
+        while a < hi:
+            b = min(a + step, hi)
+            segments.append({"sensor_id": s["sensor_id"], "location_id": s["location_id"],
+                             "pollutant": s["pollutant"], "low_cost": s["low_cost"],
                              "from": _iso(a), "to": _iso(b),
                              "est_requests": openaq_engine.estimate_requests((b - a).total_seconds() / 3600)})
+            a = b
 
-    # pack segments into items under the request budget (and a sensor cap for small incremental pulls)
+    # pack segments into items under the request budget; fewer, fuller items mean fewer adf activities
     items, current, used = [], [], 0
     for seg in segments:
-        if current and (used + seg["est_requests"] > budget or len(current) >= OPENAQ_INCREMENTAL_SENSORS):
+        if current and used + seg["est_requests"] > budget:
             items.append(current)
             current, used = [], 0
         current.append(seg)

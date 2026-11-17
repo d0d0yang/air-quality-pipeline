@@ -5,6 +5,8 @@ Weather forecasts from Open-Meteo for every air station's coordinates: the Histo
 for training and the Forecast API for tomorrow. Several points go in one request to keep the call count low.
 """
 
+from datetime import date, timedelta
+
 from pipeline import http_client
 
 HISTORICAL_URL = "https://historical-forecast-api.open-meteo.com/v1/forecast"
@@ -55,7 +57,9 @@ def historical(points, start_date, end_date):
         "start_date": start_date.isoformat(),
         "end_date": end_date.isoformat(),
     }
-    payload = http_client.get(HISTORICAL_URL, params=params, timeout=180).json()
+    # archived forecasts never change once they're a week old, so dev runs can reuse them
+    settled = end_date < date.today() - timedelta(days=7)
+    payload = http_client.get_json(HISTORICAL_URL, params=params, timeout=180, cache=settled)
     return list(zip(points, _as_list(payload), strict=True))
 
 

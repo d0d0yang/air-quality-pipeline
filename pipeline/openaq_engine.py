@@ -7,6 +7,7 @@ Throttled to OPENAQ_RPM and the hourly cap, and it backs off when the rate-limit
 
 import time
 from collections import deque
+from datetime import UTC, datetime, timedelta
 
 from pipeline import config, http_client
 
@@ -62,23 +63,23 @@ def throttle():
     return _throttle
 
 
-def _get(path, params=None):
+def _get(path, params=None, cache=False):
     if not config.OPENAQ_API_KEY:
         raise RuntimeError("OPENAQ_API_KEY is not set (get a free key at explore.openaq.org)")
     t = throttle()
-    t.wait()
-    resp = http_client.get(f"{BASE}{path}", params=params, headers={"X-API-Key": config.OPENAQ_API_KEY})
-    t.from_headers(resp.headers)
-    return resp.json()
+    return http_client.get_json(
+        f"{BASE}{path}", params=params, headers={"X-API-Key": config.OPENAQ_API_KEY}, cache=cache,
+        before=t.wait, after=lambda resp: t.from_headers(resp.headers),
+    )
 
 
-def _paged(path, params, deadline=None):
+def _paged(path, params, deadline=None, cache=False):
     """Follows page numbers until a short page. Returns (results, finished)."""
     results, page = [], 1
     while True:
         if deadline is not None and time.monotonic() > deadline:
             return results, False
-        body = _get(path, {**params, "limit": PAGE_LIMIT, "page": page})
+        body = _get(path, {**params, "limit": PAGE_LIMIT, "page": page}, cache=cache)
         batch = body.get("results", [])
         results.extend(batch)
         if len(batch) < PAGE_LIMIT:
@@ -98,7 +99,9 @@ def sensor_hours(sensor_id, datetime_from, datetime_to, deadline=None):
         "datetime_from": datetime_from.strftime("%Y-%m-%dT%H:%M:%SZ"),
         "datetime_to": datetime_to.strftime("%Y-%m-%dT%H:%M:%SZ"),
     }
-    return _paged(f"/sensors/{sensor_id}/hours", params, deadline=deadline)
+    # only windows that ended over a week ago are safe to cache (late corrections land within days)
+    settled = datetime_to < datetime.now(UTC) - timedelta(days=7)
+    return _paged(f"/sensors/{sensor_id}/hours", params, deadline=deadline, cache=settled)
 
 
 def estimate_requests(hours):

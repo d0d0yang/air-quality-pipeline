@@ -50,4 +50,6 @@ INCLUDE_LOW_COST_SENSORS = _get("INCLUDE_LOW_COST_SENSORS", "1") == "1"
 MAX_MATCH_KM = float(_get("MAX_MATCH_KM", "25"))
 OPENAQ_RPM = int(_get("OPENAQ_RPM", "50"))
 REFRESH_SCHEDULE = _get("REFRESH_SCHEDULE", "daily")
+# development only: reuse raw downloads of past data from data/cache/. benchmarks refuse to run with it on.
+DEV_CACHE = _get("DEV_CACHE", "0") == "1"
 USER_AGENT = _get("USER_AGENT", "air-quality-pipeline (github.com/d0d0yang/air-quality-pipeline)")

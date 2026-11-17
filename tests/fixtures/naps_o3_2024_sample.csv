@@ -1,0 +1,10 @@
+﻿File generated on // Fichier créé sur, 2026-06-16,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+Pollutant // Polluant:, O3,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+Units // Unités, ppb,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+Note // Note,Data is hour ending local standard time // Données en heure normale locale,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+Note // Note,Zeros are valid. -999 denotes no data available // Zéros sont valides .-999 Données non disponibles,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+Pollutant//Polluant,NAPS ID//Identifiant SNPA,City//Ville,Province/Territory//Province/Territoire,Latitude//Latitude,Longitude//Longitude,Date//Date,H01//H01,H02//H02,H03//H03,H04//H04,H05//H05,H06//H06,H07//H07,H08//H08,H09//H09,H10//H10,H11//H11,H12//H12,H13//H13,H14//H14,H15//H15,H16//H16,H17//H17,H18//H18,H19//H19,H20//H20,H21//H21,H22//H22,H23//H23,H24//H24
+O3,60410,Toronto,ON,43.74792,-79.27406,2024-01-01,16,17,15,-999,20,21,20,18,18,17,17,16,15,19,19,20,23,24,23,24,24,24,24,24
+O3,60410,Toronto,ON,43.74792,-79.27406,2024-07-01,20,19,16,-999,14,14,15,16,19,20,22,25,27,28,29,29,32,35,35,28,17,13,16,9

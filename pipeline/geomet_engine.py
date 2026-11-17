@@ -5,7 +5,7 @@ Pulls ECCC's MSC GeoMet OGC API collections: AQHI stations, observations and for
 plus climate stations and their hourly weather. Pages by following the `next` links.
 """
 
-from datetime import datetime
+from datetime import UTC, datetime, timedelta
 
 from pipeline import config, http_client
 
@@ -32,12 +32,12 @@ def datetime_range(start=None, end=None):
     return f"{iso(start) if start else '..'}/{iso(end) if end else '..'}"
 
 
-def iter_features(collection, params, max_pages=500):
+def iter_features(collection, params, max_pages=500, cache=False):
     """Yields features page by page. The next link already carries the filters, so it's used as-is."""
     url = f"{BASE}/{collection}/items"
     query = {"f": "json", "limit": PAGE_LIMIT, **params}
     for _ in range(max_pages):
-        page = http_client.get(url, params=query, timeout=120).json()
+        page = http_client.get_json(url, params=query, timeout=120, cache=cache)
         yield from page.get("features", [])
         next_link = next((link["href"] for link in page.get("links", []) if link.get("rel") == "next"), None)
         if not next_link or not page.get("features"):
@@ -88,4 +88,5 @@ def climate_hourly(climate_id, start, end):
         "properties": ",".join(CLIMATE_HOURLY_FIELDS),
         "sortby": "UTC_DATE",
     }
-    return list(iter_features("climate-hourly", params))
+    settled = end is not None and end < datetime.now(UTC) - timedelta(days=7)
+    return list(iter_features("climate-hourly", params, cache=settled))

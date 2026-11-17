@@ -77,6 +77,9 @@ def download(path, etag=None):
     url = f"{API}/file?path=" + urllib.parse.quote("/" + path.lstrip("/"), safe="")
     headers = {"If-None-Match": etag} if etag else None
     name = path.rsplit("/", 1)[-1]
+    cached = config.LOCAL_DATA_DIR / "cache" / "naps" / name
+    if config.DEV_CACHE and cached.exists():
+        return _from_bytes(cached.read_bytes(), origin="cache")
     try:
         resp = http_client.get(url, headers=headers, timeout=180, allow_status=(304,))
     except http_client.HttpError as exc:
@@ -89,6 +92,9 @@ def download(path, etag=None):
     if resp.status_code == 304:
         return {"content": None, "etag": etag, "last_modified": None, "sha256": None, "origin": "portal"}
     result = _from_bytes(resp.content, origin="portal")
+    if config.DEV_CACHE:
+        cached.parent.mkdir(parents=True, exist_ok=True)
+        cached.write_bytes(resp.content)
     result["etag"] = resp.headers.get("ETag")
     result["last_modified"] = resp.headers.get("Last-Modified")
     return result

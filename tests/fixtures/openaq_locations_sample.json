@@ -1,0 +1,276 @@
+[
+ {
+  "id": 1274950,
+  "name": "Toronto West",
+  "locality": "N/A",
+  "timezone": "America/Toronto",
+  "country": {
+   "id": 156,
+   "code": "CA",
+   "name": "Canada"
+  },
+  "owner": {
+   "id": 4,
+   "name": "Unknown Governmental Organization"
+  },
+  "provider": {
+   "id": 119,
+   "name": "AirNow"
+  },
+  "isMobile": false,
+  "isMonitor": true,
+  "instruments": [
+   {
+    "id": 2,
+    "name": "Government Monitor"
+   }
+  ],
+  "sensors": [
+   {
+    "id": 6571493,
+    "name": "co ppm",
+    "parameter": {
+     "id": 8,
+     "name": "co",
+     "units": "ppm",
+     "displayName": "CO"
+    }
+   },
+   {
+    "id": 6571452,
+    "name": "no ppm",
+    "parameter": {
+     "id": 35,
+     "name": "no",
+     "units": "ppm",
+     "displayName": "NO"
+    }
+   },
+   {
+    "id": 6553688,
+    "name": "no2 ppm",
+    "parameter": {
+     "id": 7,
+     "name": "no2",
+     "units": "ppm",
+     "displayName": "NO\u2082"
+    }
+   },
+   {
+    "id": 6571506,
+    "name": "nox ppm",
+    "parameter": {
+     "id": 19840,
+     "name": "nox",
+     "units": "ppm",
+     "displayName": "NOx"
+    }
+   },
+   {
+    "id": 6571247,
+    "name": "o3 ppm",
+    "parameter": {
+     "id": 10,
+     "name": "o3",
+     "units": "ppm",
+     "displayName": "O\u2083"
+    }
+   },
+   {
+    "id": 6553681,
+    "name": "pm25 \u00b5g/m\u00b3",
+    "parameter": {
+     "id": 2,
+     "name": "pm25",
+     "units": "\u00b5g/m\u00b3",
+     "displayName": "PM2.5"
+    }
+   },
+   {
+    "id": 6553667,
+    "name": "so2 ppm",
+    "parameter": {
+     "id": 9,
+     "name": "so2",
+     "units": "ppm",
+     "displayName": "SO\u2082"
+    }
+   }
+  ],
+  "coordinates": {
+   "latitude": 43.709444,
+   "longitude": -79.5435
+  },
+  "licenses": [
+   {
+    "id": 33,
+    "name": "US Public Domain",
+    "attribution": {
+     "name": "Unknown Governmental Organization",
+     "url": null
+    },
+    "dateFrom": "2016-01-30",
+    "dateTo": null
+   }
+  ],
+  "bounds": [
+   -79.5435,
+   43.709444,
+   -79.5435,
+   43.709444
+  ],
+  "distance": null,
+  "datetimeFirst": {
+   "utc": "2023-07-16T17:00:00Z",
+   "local": "2023-07-16T13:00:00-04:00"
+  },
+  "datetimeLast": {
+   "utc": "2026-11-17T05:00:00Z",
+   "local": "2026-11-17T00:00:00-05:00"
+  }
+ },
+ {
+  "id": 1564668,
+  "name": "Lilac Hill",
+  "locality": null,
+  "timezone": "America/Toronto",
+  "country": {
+   "id": 156,
+   "code": "CA",
+   "name": "Canada"
+  },
+  "owner": {
+   "id": 4136131,
+   "name": "Ian Darwin"
+  },
+  "provider": {
+   "id": 66,
+   "name": "AirGradient"
+  },
+  "isMobile": false,
+  "isMonitor": false,
+  "instruments": [
+   {
+    "id": 2490088,
+    "name": "AirGradient DIY-Basic Generation 1-3 (O-1DIY)"
+   },
+   {
+    "id": 2490088,
+    "name": "AirGradient DIY-Basic Generation 1-3 (O-1DIY)"
+   }
+  ],
+  "sensors": [
+   {
+    "id": 13777194,
+    "name": "pm1 \u00b5g/m\u00b3",
+    "parameter": {
+     "id": 19,
+     "name": "pm1",
+     "units": "\u00b5g/m\u00b3",
+     "displayName": "PM1"
+    }
+   },
+   {
+    "id": 17726744,
+    "name": "pm1 \u00b5g/m\u00b3",
+    "parameter": {
+     "id": 19,
+     "name": "pm1",
+     "units": "\u00b5g/m\u00b3",
+     "displayName": "PM1"
+    }
+   },
+   {
+    "id": 6942075,
+    "name": "pm25 \u00b5g/m\u00b3",
+    "parameter": {
+     "id": 2,
+     "name": "pm25",
+     "units": "\u00b5g/m\u00b3",
+     "displayName": "PM2.5"
+    }
+   },
+   {
+    "id": 13777195,
+    "name": "relativehumidity %",
+    "parameter": {
+     "id": 98,
+     "name": "relativehumidity",
+     "units": "%",
+     "displayName": "RH"
+    }
+   },
+   {
+    "id": 17726745,
+    "name": "relativehumidity %",
+    "parameter": {
+     "id": 98,
+     "name": "relativehumidity",
+     "units": "%",
+     "displayName": "RH"
+    }
+   },
+   {
+    "id": 6942074,
+    "name": "temperature c",
+    "parameter": {
+     "id": 100,
+     "name": "temperature",
+     "units": "c",
+     "displayName": "Temperature (C)"
+    }
+   },
+   {
+    "id": 13777196,
+    "name": "um003 particles/cm\u00b3",
+    "parameter": {
+     "id": 125,
+     "name": "um003",
+     "units": "particles/cm\u00b3",
+     "displayName": "PM0.3 count"
+    }
+   },
+   {
+    "id": 17726746,
+    "name": "um003 particles/cm\u00b3",
+    "parameter": {
+     "id": 125,
+     "name": "um003",
+     "units": "particles/cm\u00b3",
+     "displayName": "PM0.3 count"
+    }
+   }
+  ],
+  "coordinates": {
+   "latitude": 44.012,
+   "longitude": -79.933
+  },
+  "licenses": [
+   {
+    "id": 41,
+    "name": "CC BY 4.0",
+    "attribution": {
+     "name": "Ian Darwin",
+     "url": null
+    },
+    "dateFrom": "2023-07-15",
+    "dateTo": null
+   }
+  ],
+  "bounds": [
+   -79.933,
+   44.012,
+   -79.933,
+   44.012
+  ],
+  "distance": null,
+  "datetimeFirst": {
+   "utc": "2023-09-12T17:00:00Z",
+   "local": "2023-09-12T13:00:00-04:00"
+  },
+  "datetimeLast": {
+   "utc": "2026-11-17T05:00:00Z",
+   "local": "2026-11-17T00:00:00-05:00"
+  }
+ }
+]

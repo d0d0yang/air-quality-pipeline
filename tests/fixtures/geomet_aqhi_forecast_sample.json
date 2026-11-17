@@ -1,0 +1,72 @@
+[
+ {
+  "type": "Feature",
+  "id": "AQ_FCST-FEBWC-202611141100-202611141100",
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    -80.4727778,
+    43.4186111
+   ]
+  },
+  "properties": {
+   "id": "AQ_FCST-FEBWC-202611141100-202611141100",
+   "aqhi_type": "AQHI-Forecast",
+   "forecast_type": "original",
+   "location_name_en": "Kitchener",
+   "location_name_fr": "Kitchener",
+   "location_id": "FEBWC",
+   "publication_datetime": "2026-11-14T11:00:00Z",
+   "forecast_datetime_text_en": "6:00 AM EST Saturday 14 November 2026",
+   "forecast_datetime_text_fr": "6h00 AM HNE samedi 14 novembre 2026",
+   "forecast_datetime": "2026-11-14T11:00:00Z",
+   "aqhi": 2
+  }
+ },
+ {
+  "type": "Feature",
+  "id": "AQ_FCST-FEBWC-period-202611141100",
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    -80.4727778,
+    43.4186111
+   ]
+  },
+  "properties": {
+   "id": "AQ_FCST-FEBWC-period-202611141100",
+   "aqhi_type": "AQHI-Forecast-Period",
+   "forecast_type": "original",
+   "location_name_en": "Kitchener",
+   "location_name_fr": "Kitchener",
+   "location_id": "FEBWC",
+   "publication_datetime": "2026-11-14T11:00:00Z",
+   "forecast_period": {
+    "period_1": {
+     "forecast_period_en": "Today",
+     "forecast_period_fr": "Aujourd'hui",
+     "aqhi": 2,
+     "aqhi_insmoke": null
+    },
+    "period_2": {
+     "forecast_period_en": "Tonight",
+     "forecast_period_fr": "Ce soir et cette nuit",
+     "aqhi": 2,
+     "aqhi_insmoke": null
+    },
+    "period_3": {
+     "forecast_period_en": "Tomorrow",
+     "forecast_period_fr": "Demain",
+     "aqhi": 2,
+     "aqhi_insmoke": null
+    },
+    "period_4": {
+     "forecast_period_en": "Tomorrow Night",
+     "forecast_period_fr": "Demain soir et nuit",
+     "aqhi": 2,
+     "aqhi_insmoke": null
+    }
+   }
+  }
+ }
+]

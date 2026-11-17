@@ -1,0 +1,15 @@
+﻿File generated on // Fichier créé sur, 2026-06-19
+
+Pollutant // Polluant:, PM2.5
+Units // Unités, µg/m3
+Note // Note,Data is hour ending local standard time // Données en heure normale locale
+Note // Note,Zeros are valid. -999 denotes no data available // Zéros sont valides .-999 Données non disponibles
+
+Pollutant//Polluant,Method Code//Code Méthode,NAPS ID//Identifiant SNPA,City//Ville,Province/Territory//Province/Territoire,Latitude//Latitude,Longitude//Longitude,Date//Date,H01//H01,H02//H02,H03//H03,H04//H04,H05//H05,H06//H06,H07//H07,H08//H08,H09//H09,H10//H10,H11//H11,H12//H12,H13//H13,H14//H14,H15//H15,H16//H16,H17//H17,H18//H18,H19//H19,H20//H20,H21//H21,H22//H22,H23//H23,H24//H24
+PM2.5,184,050134,Montréal,QC,45.54271,-73.57176,2024-01-01,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1
+PM2.5,184,060809,Thunder Bay,ON,48.37939,-89.29017,2024-09-22,2,0,-1,-1,0,0,-1,-1,0,-1,0,0,0,0,0,0,0,0,0,1,1,1,1,1
+PM2.5,184,061703,Oshawa,ON,43.95222,-78.91250,2024-03-10,2,2,2,2,2,2,2,2,2,3,3,3,2,2,2,2,2,2,2,2,2,2,2,2
+PM2.5,184,061703,Oshawa,ON,43.95222,-78.91250,2024-03-11,2,2,2,2,2,2,2,2,2,1,1,2,3,3,4,4,5,5,7,8,7,6,5,5
+PM2.5,636,060410,Toronto,ON,43.74792,-79.27406,2024-01-30,7,7,5,6,7,7,7,7,7,7,6,-999,6,5,6,5,4,4,5,5,6,7,7,8
+PM2.5,636,060410,Toronto,ON,43.74792,-79.27406,2024-03-14,10,9,10,13,14,15,18,19,21,16,14,11,10,8,7,8,8,9,9,5,4,4,-999,3
+PM2.5,636,060410,Toronto,ON,43.74792,-79.27406,2024-07-01,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,4,4,4,4,5,7,25,26,21

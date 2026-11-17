@@ -1,0 +1,65 @@
+[
+ {
+  "type": "Feature",
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    -79.6769699,
+    44.37124
+   ]
+  },
+  "properties": {
+   "eccc_administrative-zone": "ont",
+   "eccc_administrative-zone_name_en": "Ontario",
+   "eccc_administrative-zone_name_fr": "Ontario",
+   "location_name_en": "Barrie",
+   "location_name_fr": "Barrie",
+   "location_id": "FAFFD",
+   "url_msc-datamart_observation": "http://dd.meteo.gc.ca/today/air_quality/ont/observation/realtime/xml/AQ_OBS_FAFFD_CURRENT.xml",
+   "url_msc-datamart_forecast": "http://dd.meteo.gc.ca/today/air_quality/ont/forecast/realtime/xml/AQ_FCST_FAFFD_CURRENT.xml"
+  },
+  "id": "FAFFD"
+ },
+ {
+  "type": "Feature",
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    -79.7608333333333,
+    43.6883333333333
+   ]
+  },
+  "properties": {
+   "eccc_administrative-zone": "ont",
+   "eccc_administrative-zone_name_en": "Ontario",
+   "eccc_administrative-zone_name_fr": "Ontario",
+   "location_name_en": "Brampton",
+   "location_name_fr": "Brampton",
+   "location_id": "FALIF",
+   "url_msc-datamart_observation": "http://dd.meteo.gc.ca/today/air_quality/ont/observation/realtime/xml/AQ_OBS_FALIF_CURRENT.xml",
+   "url_msc-datamart_forecast": "http://dd.meteo.gc.ca/today/air_quality/ont/forecast/realtime/xml/AQ_FCST_FALIF_CURRENT.xml"
+  },
+  "id": "FALIF"
+ },
+ {
+  "type": "Feature",
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    -80.25749,
+    43.1569444
+   ]
+  },
+  "properties": {
+   "eccc_administrative-zone": "ont",
+   "eccc_administrative-zone_name_en": "Ontario",
+   "eccc_administrative-zone_name_fr": "Ontario",
+   "location_name_en": "Brantford",
+   "location_name_fr": "Brantford",
+   "location_id": "FALJI",
+   "url_msc-datamart_observation": "http://dd.meteo.gc.ca/today/air_quality/ont/observation/realtime/xml/AQ_OBS_FALJI_CURRENT.xml",
+   "url_msc-datamart_forecast": "http://dd.meteo.gc.ca/today/air_quality/ont/forecast/realtime/xml/AQ_FCST_FALJI_CURRENT.xml"
+  },
+  "id": "FALJI"
+ }
+]
