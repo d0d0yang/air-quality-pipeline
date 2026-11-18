@@ -36,4 +36,6 @@ def test_admin_conn_str_uses_sa(monkeypatch):
 def test_select_version():
     from pipeline import db
 
-    assert "Microsoft SQL Server" in db.server_version()
+    # master always exists, so this works on a fresh server (ci) as well as a set-up one
+    with db.connect(admin=True, database="master") as conn:
+        assert "Microsoft SQL Server" in conn.cursor().execute("SELECT @@VERSION").fetchone()[0]
