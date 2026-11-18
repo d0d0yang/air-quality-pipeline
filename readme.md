@@ -3,7 +3,7 @@
 A daily pipeline that pulls hourly air pollution and weather data for Southern Ontario into a SQL database, cleans
 and links it, and forecasts tomorrow's PM2.5 at every monitoring station. Results show up on a small public map.
 
-Live dashboard (TBD) · [Pipeline runs](frontend/pipeline.html) · [Model card](docs/model-card.md)
+[Live dashboard](https://d0d0yang.github.io/air-quality-pipeline/) · [Pipeline runs](https://d0d0yang.github.io/air-quality-pipeline/pipeline.html) · [Model card](docs/model-card.md)
 
 ss
 
