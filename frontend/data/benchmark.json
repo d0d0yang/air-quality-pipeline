@@ -76,6 +76,84 @@
       "started_utc": "2026-11-18T11:27:07Z",
       "target": "local",
       "scenario": "full"
+    },
+    {
+      "run_id": 2,
+      "status": "succeeded",
+      "duration_s": 864.25,
+      "rows_read": 788825,
+      "rows_inserted": 1384,
+      "rows_updated": 3055,
+      "started_utc": "2026-11-18T16:14:53Z",
+      "adf_run_id": "2214a88f-e36b-11f1-a3af-c475ab6c8643",
+      "adf_status": "Succeeded",
+      "target": "azure",
+      "scenario": "incremental_daily"
+    },
+    {
+      "run_id": 3,
+      "status": "succeeded",
+      "duration_s": 716.493,
+      "rows_read": 280486,
+      "rows_inserted": 23,
+      "rows_updated": 47,
+      "started_utc": "2026-11-18T16:30:02Z",
+      "adf_run_id": "43d81767-e36d-11f1-a1f6-c475ab6c8643",
+      "adf_status": "Succeeded",
+      "target": "azure",
+      "scenario": "incremental_noop"
+    },
+    {
+      "run_id": 4,
+      "status": "succeeded",
+      "duration_s": 661.939,
+      "rows_read": 181435,
+      "rows_inserted": 0,
+      "rows_updated": 1162,
+      "started_utc": "2026-11-18T16:42:35Z",
+      "adf_run_id": "064a14e2-e36f-11f1-8e7b-c475ab6c8643",
+      "adf_status": "Succeeded",
+      "target": "azure",
+      "scenario": "incremental_daily"
+    },
+    {
+      "run_id": 5,
+      "status": "succeeded",
+      "duration_s": 661.369,
+      "rows_read": 22315,
+      "rows_inserted": 0,
+      "rows_updated": 19,
+      "started_utc": "2026-11-18T16:54:13Z",
+      "adf_run_id": "a4401b4f-e370-11f1-a142-c475ab6c8643",
+      "adf_status": "Succeeded",
+      "target": "azure",
+      "scenario": "incremental_noop"
+    },
+    {
+      "run_id": 6,
+      "status": "succeeded",
+      "duration_s": 649.297,
+      "rows_read": 27318,
+      "rows_inserted": 2,
+      "rows_updated": 0,
+      "started_utc": "2026-11-18T17:05:49Z",
+      "adf_run_id": "41da88d1-e372-11f1-8bb4-c475ab6c8643",
+      "adf_status": "Succeeded",
+      "target": "azure",
+      "scenario": "incremental_daily"
+    },
+    {
+      "run_id": 7,
+      "status": "succeeded",
+      "duration_s": 689.286,
+      "rows_read": 22236,
+      "rows_inserted": 59,
+      "rows_updated": 47,
+      "started_utc": "2026-11-18T17:17:19Z",
+      "adf_run_id": "e093e599-e373-11f1-8bea-c475ab6c8643",
+      "adf_status": "Succeeded",
+      "target": "azure",
+      "scenario": "incremental_noop"
     }
   ],
   "targets": {
@@ -105,8 +183,29 @@
         }
       },
       "reduction_pct": 94.4
+    },
+    "azure": {
+      "scenarios": {
+        "incremental_daily": {
+          "runs": [
+            864.25,
+            661.939,
+            649.297
+          ],
+          "median_s": 661.939
+        },
+        "incremental_noop": {
+          "runs": [
+            716.493,
+            661.369,
+            689.286
+          ],
+          "median_s": 689.286
+        }
+      },
+      "reduction_pct": null
     }
   },
-  "generated_utc": "2026-11-18T12:19:44Z",
+  "generated_utc": "2026-11-18T17:29:11Z",
   "definition": "wall-clock duration of the whole pipeline run (etl.pipeline_run started_at -> ended_at); median of all recorded runs per scenario; reduction = 1 - median(incremental_daily) / median(full)"
 }

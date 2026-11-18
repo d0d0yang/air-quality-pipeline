@@ -8,9 +8,12 @@ real day is re-pulled and merged). Runs accumulate in results.json across days; 
 
 import argparse
 import json
+import os
+import shutil
 import statistics
 import subprocess
 import sys
+import tempfile
 import time
 from datetime import UTC, datetime, timedelta
 
@@ -98,8 +101,12 @@ def local_run(scenario):
     return run_row(run_id)
 
 
+# on windows az is a .cmd, which subprocess only finds by its full path
+AZ = shutil.which("az") or r"C:\Program Files\Microsoft SDKs\Azure\CLI2\wbin\az.cmd"
+
+
 def az(*args):
-    out = subprocess.run(["az", *args, "-o", "json"], capture_output=True, text=True, check=True)
+    out = subprocess.run([AZ, *args, "-o", "json"], capture_output=True, text=True, check=True)
     return json.loads(out.stdout) if out.stdout.strip() else None
 
 
@@ -111,8 +118,15 @@ def azure_run(scenario, factory, group):
     mode = "full" if scenario == "full" else "incremental"
     with db.connect() as conn:
         before = conn.cursor().execute("SELECT ISNULL(MAX(run_id), 0) FROM etl.pipeline_run").fetchone()[0]
-    adf_run = az("datafactory", "pipeline", "create-run", "--factory-name", factory, "--resource-group", group,
-                 "--name", "pl_daily_refresh", "--parameters", json.dumps({"mode": mode}))["runId"]
+    # parameters go through a file: cmd.exe strips the quotes out of inline json
+    fd, params = tempfile.mkstemp(suffix=".json")
+    with os.fdopen(fd, "w", encoding="utf-8") as fh:
+        json.dump({"mode": mode}, fh)
+    try:
+        adf_run = az("datafactory", "pipeline", "create-run", "--factory-name", factory, "--resource-group", group,
+                     "--name", "pl_daily_refresh", "--parameters", f"@{params}")["runId"]
+    finally:
+        os.remove(params)
     while True:
         time.sleep(30)
         status = az("datafactory", "pipeline-run", "show", "--factory-name", factory, "--resource-group", group,
