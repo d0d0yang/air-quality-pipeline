@@ -5,7 +5,7 @@ and links it, and forecasts tomorrow's PM2.5 at every monitoring station. Result
 
 Live dashboard (TBD) · [Pipeline runs](frontend/pipeline.html) · [Model card](docs/model-card.md)
 
-<!-- screenshots go here: <p float="left"><img width="49%" ... src="https://github.com/user-attachments/assets/..."></p> -->
+ss
 
 ## Functionality
 
