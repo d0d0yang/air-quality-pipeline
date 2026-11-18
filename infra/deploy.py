@@ -3,7 +3,8 @@ deploy.py
 
 One command from an empty resource group to a scheduled pipeline: bicep (twice), sql schema + etl_app, the
 function code, the model files, the adf trigger, and a read-only SAS url for the dashboard. Uses the az cli you're
-logged into; secrets come from .env and never get printed. `--what-if` previews the first bicep pass and stops.
+logged into; secrets come from .env and never get printed. `--what-if` previews the first bicep pass and stops;
+`--code-only` just redeploys the function code.
 """
 
 import json
@@ -92,8 +93,22 @@ def upload_models(connection_string):
         print(f"   uploaded models/{name}")
 
 
+def deploy_code_only(group):
+    """Just repackage and push the function code (after a code fix); infrastructure stays as it is."""
+    apps = az("functionapp", "list", "--resource-group", group, "--query", "[].name")
+    if len(apps) != 1:
+        raise SystemExit(f"expected one function app in {group}, found {apps}")
+    say(f"deploying function code to {apps[0]} (remote build)")
+    az("functionapp", "deployment", "source", "config-zip", "--resource-group", group, "--name", apps[0],
+       "--src", str(package_function()), "--build-remote", "true", capture=False)
+    say("done")
+    return 0
+
+
 def main():
     group = config._get("AZ_RESOURCE_GROUP", "rg-air-quality-pipeline")
+    if "--code-only" in sys.argv:
+        return deploy_code_only(group)
     location = config._get("AZ_LOCATION", "canadacentral")
     admin_user = config._get("AZ_SQL_ADMIN_USER", "aqadmin")
     admin_pw, etl_pw, openaq_key = need("AZ_SQL_ADMIN_PASSWORD"), need("AZ_SQL_ETL_PASSWORD"), need("OPENAQ_API_KEY")

@@ -141,9 +141,15 @@ def build_stations(conn, now):
     return {"generated_utc": iso(now), "hours_start_utc": iso(start), "stations": out}
 
 
-def build_summary(conn, now, stations):
-    last_run = rows(conn, "SELECT TOP (1) run_id, mode, status, started_at, ended_at, duration_s FROM etl.pipeline_run "
-                          "WHERE status = 'succeeded' ORDER BY run_id DESC")
+def build_summary(conn, now, stations, run_id=None):
+    # publish is a step of a run that hasn't ended yet, so describe that run (its data is what's being published);
+    # outside a run, fall back to the last one that succeeded
+    if run_id is not None:
+        last_run = rows(conn, "SELECT run_id, mode, status, started_at, ended_at, duration_s FROM etl.pipeline_run "
+                              "WHERE run_id = ?", run_id)
+    else:
+        last_run = rows(conn, "SELECT TOP (1) run_id, mode, status, started_at, ended_at, duration_s "
+                              "FROM etl.pipeline_run WHERE status = 'succeeded' ORDER BY run_id DESC")
     # one line per provider and licence (each low-cost sensor has its own owner, which would repeat providers)
     attributions = rows(conn, """
         SELECT provider, licence, MIN(attribution) AS attribution, COUNT(*) AS stations FROM core.station
@@ -155,7 +161,9 @@ def build_summary(conn, now, stations):
     r = last_run[0] if last_run else None
     return {
         "generated_utc": iso(now),
-        "last_run": None if not r else {"run_id": r["run_id"], "mode": r["mode"], "ended_utc": iso(r["ended_at"]),
+        # a run still in progress has no end yet: the snapshot time stands in for "refreshed at"
+        "last_run": None if not r else {"run_id": r["run_id"], "mode": r["mode"], "status": r["status"],
+                                        "ended_utc": iso(r["ended_at"] or now),
                                         "duration_s": num(r["duration_s"], 1)},
         "region": {"bbox": list(config.REGION_BBOX), "pollutants": config.POLLUTANTS},
         "sites": {"total": len(stations["stations"]),
@@ -263,7 +271,7 @@ def run(run_id=None, local_copy=None):
         stations = build_stations(conn, now)
         files = {
             "stations.json": stations,
-            "summary.json": build_summary(conn, now, stations),
+            "summary.json": build_summary(conn, now, stations, run_id),
             "pipeline.json": build_pipeline(conn, now),
         }
     forecast = build_forecast(store)
