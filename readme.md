@@ -98,7 +98,8 @@ Note: the first full load took about 50 minutes on my laptop, most of it waiting
 
 The same code runs on Azure: Data Factory schedules and fans out the work, Azure Functions (Flex Consumption) run
 the Python, Blob Storage holds the landing files, and Azure SQL Database runs on its free offer set to pause
-instead of bill. The Bicep templates and a one-command `infra/deploy.py` are being built next (TBD).
+instead of bill. Everything is in [infra/](infra/) as Bicep, and `python infra/deploy.py` deploys it in one
+command (`--what-if` previews it first). [infra/teardown.md](infra/teardown.md) shows how to pause or remove it.
 
 ## Project Structure
 
