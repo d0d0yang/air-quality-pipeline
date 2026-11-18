@@ -65,6 +65,17 @@
       "started_utc": "2026-11-17T08:22:30Z",
       "target": "local",
       "scenario": "incremental_noop"
+    },
+    {
+      "run_id": 14,
+      "status": "succeeded",
+      "duration_s": 3157.181,
+      "rows_read": 4913090,
+      "rows_inserted": 5331409,
+      "rows_updated": 88,
+      "started_utc": "2026-11-18T11:27:07Z",
+      "target": "local",
+      "scenario": "full"
     }
   ],
   "targets": {
@@ -85,11 +96,17 @@
             174.942
           ],
           "median_s": 174.914
+        },
+        "full": {
+          "runs": [
+            3157.181
+          ],
+          "median_s": 3157.181
         }
       },
-      "reduction_pct": null
+      "reduction_pct": 94.4
     }
   },
-  "generated_utc": "2026-11-17T08:25:25Z",
+  "generated_utc": "2026-11-18T12:19:44Z",
   "definition": "wall-clock duration of the whole pipeline run (etl.pipeline_run started_at -> ended_at); median of all recorded runs per scenario; reduction = 1 - median(incremental_daily) / median(full)"
 }
