@@ -3,7 +3,7 @@ deploy.py
 
 One command from an empty resource group to a scheduled pipeline: bicep (twice), sql schema + etl_app, the
 function code, the model files, the adf trigger, and a read-only SAS url for the dashboard. Uses the az cli you're
-logged into; secrets come from .env and never get printed.
+logged into; secrets come from .env and never get printed. `--what-if` previews the first bicep pass and stops.
 """
 
 import json
@@ -118,6 +118,9 @@ def main():
 
     say("what-if: what the bicep will create or change")
     deployment(group, params, what_if=True)
+    if "--what-if" in sys.argv:
+        print("--what-if: stopping here, nothing was deployed")
+        return 0
     say("creating: storage account (+5 containers), log analytics + app insights, flex consumption plan + "
         "function app, sql server + free-offer database + 2 firewall rules, data factory + linked services + datasets")
     out = deployment(group, params)
