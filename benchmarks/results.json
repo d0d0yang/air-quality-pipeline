@@ -178,6 +178,30 @@
       "started_utc": "2026-11-19T15:33:08Z",
       "target": "local",
       "scenario": "full"
+    },
+    {
+      "run_id": 17,
+      "status": "succeeded",
+      "duration_s": 3553.978,
+      "rows_read": 4934371,
+      "rows_inserted": 5337690,
+      "rows_updated": 70,
+      "started_utc": "2026-11-26T15:21:57Z",
+      "adf_run_id": "01e81f83-e9ad-11f1-b22c-c475ab6c8643",
+      "adf_status": "Succeeded",
+      "target": "azure",
+      "scenario": "full"
+    },
+    {
+      "run_id": 16,
+      "status": "succeeded",
+      "duration_s": 2917.98,
+      "rows_read": 4934475,
+      "rows_inserted": 5342477,
+      "rows_updated": 91,
+      "started_utc": "2026-11-26T16:21:45Z",
+      "target": "local",
+      "scenario": "full"
     }
   ],
   "targets": {
@@ -202,12 +226,13 @@
         "full": {
           "runs": [
             3157.181,
-            2969.116
+            2969.116,
+            2917.98
           ],
-          "median_s": 3063.1485000000002
+          "median_s": 2969.116
         }
       },
-      "reduction_pct": 94.2
+      "reduction_pct": 94.0
     },
     "azure": {
       "scenarios": {
@@ -229,14 +254,15 @@
         },
         "full": {
           "runs": [
-            3788.788
+            3788.788,
+            3553.978
           ],
-          "median_s": 3788.788
+          "median_s": 3671.383
         }
       },
-      "reduction_pct": 82.5
+      "reduction_pct": 82.0
     }
   },
-  "generated_utc": "2026-11-19T16:22:37Z",
+  "generated_utc": "2026-11-26T17:10:23Z",
   "definition": "wall-clock duration of the whole pipeline run (etl.pipeline_run started_at -> ended_at); median of all recorded runs per scenario; reduction = 1 - median(incremental_daily) / median(full)"
 }
