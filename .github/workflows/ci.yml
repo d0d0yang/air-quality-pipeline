@@ -32,7 +32,7 @@ jobs:
           --health-cmd "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P \"$MSSQL_SA_PASSWORD\" -C -Q 'SELECT 1' -b"
           --health-interval 10s --health-timeout 5s --health-retries 15 --health-start-period 20s
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: secret scan
         run: |
@@ -42,7 +42,7 @@ jobs:
             echo "possible secret committed (see lines above)"; exit 1
           fi
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.13"
           cache: pip
