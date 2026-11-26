@@ -23,11 +23,8 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  deploy:
-    runs-on: ubuntu-24.04  # pinned: microsoft's odbc package repo supports it
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  build:
+    runs-on: ubuntu-24.04
     env:
       PUBLISHED_DATA_SAS_URL: ${{ secrets.PUBLISHED_DATA_SAS_URL }}
     steps:
@@ -59,5 +56,15 @@ jobs:
       - uses: actions/upload-pages-artifact@v5
         with:
           path: frontend
+
+  # a separate job, like github's starter workflow: deploying in the same job a second after the upload
+  # sometimes asks for the artifact before github's api lists it ("no artifacts named github-pages")
+  deploy:
+    needs: build
+    runs-on: ubuntu-24.04
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
       - id: deployment
         uses: actions/deploy-pages@v5
